@@ -710,7 +710,7 @@
           <div>
             <span class="c-lbl">Location</span>
             <!-- EDIT: your city/state -->
-            <span class="c-val">United States — Available Nationwide</span>
+            <span class="c-val">Overland Park, KS</span>
           </div>
         </div>
         <div class="c-info-item">
@@ -788,8 +788,8 @@
         <div class="c-info-item">
           <div class="c-icon">📍</div>
           <div>
-            <span class="c-lbl">Coverage Area</span>
-            <span class="c-val">United States — Available Nationwide</span>
+            <span class="c-lbl">Location</span>
+            <span class="c-val">Overland Park, KS</span>
           </div>
         </div>
         <div class="c-info-item">
@@ -890,6 +890,13 @@ let sports = [
    EDIT: paste your Cloudflare R2 public URL here.
    ───────────────────────────────────────────────────────────── */
 const R2_URL = 'https://pub-69a427f09bfb4986a3f02bc906620467.r2.dev';
+
+/* ─────────────────────────────────────────────────────────────
+   FORM SUBMISSION ENDPOINT
+   Replace with your form service URL (e.g. Formspree form endpoint).
+   Example: https://formspree.io/f/yourFormId
+   ───────────────────────────────────────────────────────────── */
+const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
 
 /* ─────────────────────────────────────────────────────────────
    PHOTO MANIFEST
@@ -1422,7 +1429,6 @@ function submitContact() {
 }
 
 function submitBooking() {
-  const recipient = 'zepheraphotography@gmail.com';
   const firstName = document.getElementById('booking-first-name').value.trim();
   const lastName = document.getElementById('booking-last-name').value.trim();
   const email = document.getElementById('booking-email').value.trim();
@@ -1435,23 +1441,43 @@ function submitBooking() {
   const budget = document.getElementById('booking-budget').value;
   const details = document.getElementById('booking-details').value.trim();
 
-  const subject = `Booking request from ${firstName || 'Guest'} ${lastName || ''}`.trim();
-  const body = `Name: ${firstName} ${lastName}\n` +
-    `Email: ${email}\n` +
-    `Phone: ${phone}\n` +
-    `Sport / Event Type: ${sport}\n` +
-    `Event Date: ${date}\n` +
-    `Location: ${location}\n` +
-    `Team / Organization: ${team}\n` +
-    `Estimated Athletes: ${athletes}\n` +
-    `Budget Range: ${budget}\n\n` +
-    `Additional Details:\n${details}`;
+  if (!firstName || !lastName || !email || !sport || !date || !location) {
+    toast('Please complete the required fields before sending.');
+    return;
+  }
 
-  const encoded = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  const payload = {
+    firstName,
+    lastName,
+    email,
+    phone,
+    sport,
+    date,
+    location,
+    team,
+    athletes,
+    budget,
+    details,
+    _subject: `Booking request from ${firstName} ${lastName}`.trim(),
+    _replyto: email,
+  };
 
-  window.location.href = encoded;
-  resetBookingForm();
-  toast("Booking request sent! I’ll confirm availability within 24 hours.");
+  fetch(FORM_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    },
+    body: JSON.stringify(payload),
+  })
+    .then(response => {
+      if (!response.ok) throw new Error('Submission failed');
+      resetBookingForm();
+      toast('Booking request sent! I’ll confirm availability within 24 hours.');
+    })
+    .catch(() => {
+      toast('Submission failed. Please try again in a moment.');
+    });
 }
 
 /* ─────────────────────────────────────────────────────────────
