@@ -821,7 +821,7 @@
             <option value="">Select a sport...</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-lbl">Event Date *</label><input id="booking-date" type="date" class="form-ctrl"></div>
+        <div class="form-group"><label class="form-lbl">Event Date *</label><input id="booking-date" type="date" class="form-ctrl" min="" required></div>
       </div>
       <div class="form-row">
         <div class="form-group"><label class="form-lbl">Event Location / City *</label><input id="booking-location" type="text" class="form-ctrl" placeholder="e.g. Los Angeles, CA"></div>
@@ -886,17 +886,10 @@ let sports = [
 ];
 
 /* ─────────────────────────────────────────────────────────────
-   R2 BUCKET URL
-   EDIT: paste your Cloudflare R2 public URL here.
-   ───────────────────────────────────────────────────────────── */
-const R2_URL = 'https://pub-69a427f09bfb4986a3f02bc906620467.r2.dev';
-
-/* ─────────────────────────────────────────────────────────────
    FORM SUBMISSION ENDPOINT
-   Replace with your form service URL (e.g. Formspree form endpoint).
-   Example: https://formspree.io/f/yourFormId
+   Using Formsubmit.co - no account required!
    ───────────────────────────────────────────────────────────── */
-const FORM_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+const FORM_ENDPOINT = 'https://formsubmit.co/zepheraphotography@gmail.com';
 
 /* ─────────────────────────────────────────────────────────────
    PHOTO MANIFEST
@@ -1063,6 +1056,9 @@ function showPage(id, isBack) {
 
   /* Drag-to-reorder: local only */
   if (LOCAL && sports.find(s => s.id === id)) initDrag(id);
+
+  /* Set minimum date for booking form */
+  if (id === 'book') setMinDate();
 
   /* Sync contact select and nav */
   syncSelect();
@@ -1414,6 +1410,18 @@ function syncSelect() {
   });
 }
 
+function setMinDate() {
+  const today = new Date().toISOString().split('T')[0];
+  const dateInput = document.getElementById('booking-date');
+  if (dateInput) {
+    dateInput.min = today;
+    // Ensure date picker closes after selection
+    dateInput.addEventListener('change', () => {
+      dateInput.blur(); // This helps close the date picker on some browsers
+    });
+  }
+}
+
 function resetBookingForm() {
   document.querySelectorAll('#page-book .contact-right .form-ctrl').forEach(el => {
     if (el.tagName === 'SELECT') {
@@ -1446,29 +1454,23 @@ function submitBooking() {
     return;
   }
 
-  const payload = {
-    firstName,
-    lastName,
-    email,
-    phone,
-    sport,
-    date,
-    location,
-    team,
-    athletes,
-    budget,
-    details,
-    _subject: `Booking request from ${firstName} ${lastName}`.trim(),
-    _replyto: email,
-  };
+  const formData = new FormData();
+  formData.append('name', `${firstName} ${lastName}`);
+  formData.append('email', email);
+  formData.append('phone', phone);
+  formData.append('sport', sport);
+  formData.append('event_date', date);
+  formData.append('location', location);
+  formData.append('team', team);
+  formData.append('athletes', athletes);
+  formData.append('budget', budget);
+  formData.append('details', details);
+  formData.append('_subject', `Booking request from ${firstName} ${lastName}`);
+  formData.append('_captcha', 'false'); // Disable captcha for simplicity
 
   fetch(FORM_ENDPOINT, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-    },
-    body: JSON.stringify(payload),
+    body: formData,
   })
     .then(response => {
       if (!response.ok) throw new Error('Submission failed');
@@ -1564,6 +1566,7 @@ document.addEventListener('keydown', e => {
   buildAllSportPages();
   buildNav();
   syncSelect();
+  setMinDate();
   showPage('home');
 })();
 
