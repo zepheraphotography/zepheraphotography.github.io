@@ -1343,8 +1343,37 @@
       .lb-img-wrap { padding: 56px 52px 32px; }
     }
 
-    /* Hidden file input — triggered programmatically */
-    #file-input { display: none; }
+    /* ============================================================
+       IMAGE PROTECTION
+       Disables right-click save, drag-to-desktop, and long-press
+       save on mobile. Not 100% foolproof but stops casual copying.
+       ============================================================ */
+
+    /* Prevent image drag */
+    img { -webkit-user-drag: none; user-drag: none; }
+
+    /* Disable text/image selection across the site */
+    .photo-card, .photo-card img, #lb-img {
+      -webkit-user-select: none;
+      user-select: none;
+      -webkit-touch-callout: none; /* disables iOS long-press save */
+    }
+
+    /* Transparent overlay over lightbox image blocks right-click saving */
+    .lb-img-wrap {
+      position: relative;
+    }
+    .lb-img-wrap::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      /* transparent shield — blocks right-click on the image */
+    }
+    #lb-img {
+      position: relative;
+      z-index: 0;
+    }
 
   </style>
 </head>
@@ -1444,7 +1473,7 @@
       <button
         class="nav-link nav-dropdown-trigger"
         id="nav-portfolio"
-        onclick="toggleDropdown()"
+        onclick="toggleDropdown(event)"
         aria-haspopup="true"
         aria-expanded="false"
       >
@@ -1501,7 +1530,7 @@
         to the track.
       </p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="openFirstSport()">View Portfolio</button>
+        <button class="btn-primary" onclick="showPage('basketball')">View Portfolio</button>
         <button class="btn-outline" onclick="showPage('contact')">Book a Session</button>
       </div>
     </div>
@@ -1570,12 +1599,13 @@
     -->
     <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
     <div class="footer-links">
-      <button class="footer-link" onclick="openFirstSport()">Portfolio</button>
+      <button class="footer-link" onclick="showPage('home')">Home</button>
       <button class="footer-link" onclick="showPage('contact')">Contact</button>
       <!--
-        EDIT: Replace # with your Instagram URL.
+        EDIT: Replace the href below with your actual Instagram profile URL
+        e.g. href="https://www.instagram.com/zepheraphotography"
       -->
-      <a class="footer-link" href="#" target="_blank">Instagram</a>
+      <a class="footer-link" href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">Instagram</a>
     </div>
   </footer>
 </div>
@@ -1636,9 +1666,9 @@
           <div>
             <span class="ci-label">Instagram</span>
             <!--
-              EDIT: Replace # with your actual Instagram link.
+              EDIT: Replace with your actual Instagram URL and handle.
             -->
-            <span class="ci-value"><a href="#" target="_blank">@zepheraphotography</a></span>
+            <span class="ci-value"><a href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">@zepheraphotography</a></span>
           </div>
         </div>
       </div>
@@ -1696,8 +1726,11 @@
     <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
     <div class="footer-links">
       <button class="footer-link" onclick="showPage('home')">Home</button>
-      <button class="footer-link" onclick="openFirstSport()">Portfolio</button>
-      <a class="footer-link" href="#" target="_blank">Instagram</a>
+      <button class="footer-link" onclick="showPage('basketball')">Portfolio</button>
+      <!--
+        EDIT: Replace with your actual Instagram URL
+      -->
+      <a class="footer-link" href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">Instagram</a>
     </div>
   </footer>
 </div>
@@ -1811,6 +1844,22 @@ let uploadTargetSport = null;
    PAGE NAVIGATION
    ============================================================ */
 function showPage(pageId) {
+  /* If it's a sport page that hasn't been built yet, build it */
+  if (sportsData.find(s => s.id === pageId)) {
+    let page = document.getElementById('page-' + pageId);
+    if (!page) {
+      /* Build the missing page on demand */
+      const container = document.getElementById('sport-pages');
+      page = document.createElement('div');
+      page.className = 'page';
+      page.id = 'page-' + pageId;
+      container.appendChild(page);
+    }
+    /* Always re-render content so photo counts are fresh */
+    renderSportPageContent(pageId);
+    currentSportId = pageId;
+  }
+
   /* Hide all pages */
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
 
@@ -1823,6 +1872,11 @@ function showPage(pageId) {
   document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(el => el.classList.remove('active'));
   const navEl = document.getElementById('nav-' + pageId);
   if (navEl) navEl.classList.add('active');
+  if (pageId === 'home') {
+    const homeNav = document.getElementById('nav-home');
+    if (homeNav) homeNav.classList.add('active');
+    currentSportId = null;
+  }
 
   /* Portfolio nav stays highlighted when on a sport page */
   if (sportsData.find(s => s.id === pageId)) {
@@ -1834,16 +1888,20 @@ function showPage(pageId) {
   closeDropdown();
   closeMobileMenu();
 
-  /* Scroll top */
+  /* Scroll to top */
   window.scrollTo({ top: 0, behavior: 'instant' });
 
-  /* If it's a sport page, flag it */
+  /* Reinitialise drag-to-reorder on sport pages — local only */
   if (sportsData.find(s => s.id === pageId)) {
-    currentSportId = pageId;
+    const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+    if (isLocal) initDragToReorder(pageId);
   }
 
   /* Populate contact sport select with current folders */
   populateContactSelect();
+
+  /* Refresh nav counts */
+  renderNav();
 }
 
 /* Navigate to first sport in list */
@@ -1854,7 +1912,11 @@ function openFirstSport() {
 /* ============================================================
    DROPDOWN TOGGLE
    ============================================================ */
-function toggleDropdown() {
+function toggleDropdown(e) {
+  /* Stop the click from bubbling to the document listener
+     which would immediately close the dropdown again */
+  if (e) e.stopPropagation();
+
   const dd = document.getElementById('portfolio-dropdown');
   const btn = document.getElementById('nav-portfolio');
   const isOpen = dd.classList.contains('open');
@@ -1974,6 +2036,9 @@ function renderSportPageContent(sportId) {
   const page = document.getElementById('page-' + sportId);
   if (!page) return;
 
+  /* Determine if running locally (VS Code / file://) or on live site */
+  const isLocalRender = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+
   const imgs = imageStore[sportId] || [];
 
   page.innerHTML = `
@@ -1991,27 +2056,23 @@ function renderSportPageContent(sportId) {
       </div>
     </div>
 
-    <!-- ── ADMIN BAR ── -->
-    <!--
-      To add photos: drop files into /images/${sportId}/
-      then add the filenames to photoManifest in index.html
-    -->
-    <div class="admin-bar">
-      <span class="admin-bar-label">📂 ${sport.label} — ${imgs.length} photo${imgs.length !== 1 ? 's' : ''}</span>
-      <span class="admin-bar-hint">Add photos by editing the photoManifest in index.html</span>
-      <button class="btn-sm btn-sm-ghost" onclick="renameFolder('${sportId}')">✏ Rename</button>
-    </div>
+    <!-- ── ADMIN BAR — only shown locally, never on live site ── -->
+    ${isLocalRender ? `
+    <div class="admin-bar" id="admin-bar-${sportId}">
+      <span class="admin-bar-label">📂 LOCAL EDIT MODE — ${sport.label}</span>
+      <span class="admin-bar-hint">Add filenames to photoManifest in index.html, then push to GitHub</span>
+      <button class="btn-sm btn-sm-ghost" onclick="renameFolder('${sportId}')">✏ Rename Folder</button>
+    </div>` : ''}
 
     <!-- ── GALLERY SECTION ── -->
     <div class="gallery-wrap">
 
-      <!-- View / Sort toolbar -->
+      <!-- View toggle toolbar — column switcher only, no admin text -->
       <div class="gallery-toolbar">
         <div class="toolbar-left">
-          <span class="sort-hint">⇄ Drag photos to reorder</span>
+          <!-- intentionally empty for visitors -->
         </div>
         <div class="view-toggle">
-          <!-- Column view buttons — 4 is default -->
           <button class="view-btn" title="1 column" onclick="setColumns(this, 1, '${sportId}')">
             <svg width="14" height="14"><rect x="0" y="0" width="14" height="4" fill="currentColor"/><rect x="0" y="5" width="14" height="4" fill="currentColor"/><rect x="0" y="10" width="14" height="4" fill="currentColor"/></svg>
           </button>
@@ -2029,7 +2090,7 @@ function renderSportPageContent(sportId) {
 
       <!-- Masonry grid — photos injected here -->
       <div class="masonry-grid" id="gallery-grid-${sportId}">
-        ${imgs.length === 0 ? renderEmptyState(sportId) : imgs.map((img, i) => renderPhotoCard(img, i, sportId)).join('')}
+        ${imgs.length === 0 ? renderEmptyState(sportId) : imgs.map((img, i) => renderPhotoCard(img, i, sportId, isLocalRender)).join('')}
       </div>
     </div>
 
@@ -2038,12 +2099,14 @@ function renderSportPageContent(sportId) {
       <div class="footer-links">
         <button class="footer-link" onclick="showPage('home')">Home</button>
         <button class="footer-link" onclick="showPage('contact')">Contact</button>
+        <a class="footer-link" href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">Instagram</a>
       </div>
     </footer>
   `;
 
-  /* Attach drag-to-reorder on each photo card */
-  initDragToReorder(sportId);
+  /* Attach drag-to-reorder on each photo card — local only */
+  const isLocalRender = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+  if (isLocalRender) initDragToReorder(sportId);
 }
 
 /* ── Empty state HTML ── */
@@ -2052,50 +2115,56 @@ function renderEmptyState(sportId) {
   return `
     <div class="empty-state">
       <div class="empty-state-icon">${sport ? sport.icon : '📸'}</div>
-      <div class="empty-state-title">No photos yet</div>
+      <div class="empty-state-title">Coming Soon</div>
       <p class="empty-state-text">
-        To add photos to this gallery:<br><br>
-        <strong>1.</strong> Copy your images into <code>images/${sportId}/</code><br>
-        <strong>2.</strong> Open <code>index.html</code> in VS Code<br>
-        <strong>3.</strong> Find <code>photoManifest</code> and add your filenames<br>
-        <strong>4.</strong> Save → <code>git add . &amp;&amp; git commit -m "Add photos" &amp;&amp; git push</code>
+        Photos from ${sport ? sport.label : 'this gallery'} are on their way.<br>
+        Check back soon or get in touch to book a session.
       </p>
+      <button class="btn-primary" onclick="showPage('contact')">Book a Session</button>
     </div>
   `;
 }
 
-/* ── Single photo card HTML ── */
-function renderPhotoCard(img, index, sportId) {
+/* ── Single photo card HTML ──
+   isLocal = true when editing in VS Code (localhost)
+   isLocal = false on the live site — no admin controls shown
+── */
+function renderPhotoCard(img, index, sportId, isLocal) {
   return `
     <div
       class="photo-card"
       id="card-${img.id}"
-      draggable="true"
+      ${isLocal ? 'draggable="true"' : ''}
       data-id="${img.id}"
       data-sport="${sportId}"
       data-index="${index}"
+      oncontextmenu="return false"
     >
       <img
         src="${img.src}"
-        alt="${img.name}"
+        alt="Zephera Photography"
         loading="lazy"
+        draggable="false"
+        oncontextmenu="return false"
         onclick="LB.open('${sportId}', ${index})"
+        style="pointer-events:all; cursor:zoom-in;"
       >
       <div class="photo-card-overlay">
-        <span class="drag-handle" title="Drag to reorder">⠿</span>
+        ${isLocal ? `<span class="drag-handle" title="Drag to reorder">⠿</span>` : ''}
         <div class="photo-card-actions">
-          <!-- View in lightbox -->
+          <!-- View in lightbox — always shown -->
           <button
             class="photo-icon-btn"
             title="View fullscreen"
             onclick="LB.open('${sportId}', ${index})"
           >⤢</button>
-          <!-- Delete photo -->
+          <!-- Delete — only shown locally -->
+          ${isLocal ? `
           <button
             class="photo-icon-btn delete"
             title="Remove photo"
             onclick="deletePhoto('${sportId}', '${img.id}')"
-          >✕</button>
+          >✕</button>` : ''}
         </div>
       </div>
     </div>
@@ -2421,3 +2490,45 @@ function showToast(msg) {
 }
 
 /* ==================================================
+   INITIALISE ON LOAD
+   ================================================== */
+(function init() {
+  renderAllSportPages();
+  renderNav();
+  populateContactSelect();
+  showPage('home');
+
+  /* ── IMAGE PROTECTION ────────────────────────────────────────
+     Disables right-click context menu on all images globally.
+     Also blocks Ctrl+S / Cmd+S save shortcut and
+     Ctrl+U / Cmd+U view-source shortcut.
+     Note: determined users can still access images via dev tools —
+     this stops casual downloading only.
+  ──────────────────────────────────────────────────────────── */
+
+  /* Block right-click everywhere on the page */
+  document.addEventListener('contextmenu', e => {
+    if (e.target.tagName === 'IMG' || e.target.closest('.photo-card') || e.target.closest('#lightbox')) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  /* Block Ctrl+S / Cmd+S (save page) and Ctrl+U (view source) */
+  document.addEventListener('keydown', e => {
+    const isMac = navigator.platform.toUpperCase().includes('MAC');
+    const ctrl  = isMac ? e.metaKey : e.ctrlKey;
+    if (ctrl && (e.key === 's' || e.key === 'S')) { e.preventDefault(); return false; }
+    if (ctrl && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); return false; }
+  });
+
+  /* Block drag-to-desktop on all images */
+  document.addEventListener('dragstart', e => {
+    if (e.target.tagName === 'IMG') { e.preventDefault(); return false; }
+  });
+
+})();
+
+</script>
+</body>
+</html>
