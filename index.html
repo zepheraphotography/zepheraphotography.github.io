@@ -146,6 +146,7 @@
     .dd-manage  { color:var(--accent) !important; font-size:11px !important; }
 
     /* Book a session button */
+    /*
     .nav-book {
       font-family:var(--fd); font-size:12px; font-weight:700;
       letter-spacing:0.14em; text-transform:uppercase;
@@ -154,6 +155,7 @@
       margin-left:8px; white-space:nowrap; transition:opacity 0.2s;
     }
     .nav-book:hover { opacity:0.85; }
+    */
 
     /* Hamburger */
     .hamburger { display:none; flex-direction:column; gap:5px; width:36px; height:36px; padding:8px; border:none; background:none; cursor:pointer; margin-left:auto; }
@@ -577,7 +579,7 @@
     <button class="nav-btn" id="nav-contact" onclick="showPage('contact')">Contact</button>
   </nav>
   <!-- EDIT: change button text or link to external booking page -->
-  <button class="nav-book" onclick="showPage('book')">Book a Session</button>
+  <!-- <button class="nav-book" onclick="showPage('book')">Book a Session</button> -->
   <button class="hamburger" id="hamburger" onclick="toggleMob()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -600,7 +602,7 @@
       <p class="hero-sub">Professional sports photography capturing the raw intensity, emotion, and beauty of athletic competition — from courtside to the track.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="showPage('portfolio')">View Portfolio</button>
-        <button class="btn-outline" onclick="showPage('book')">Book a Session</button>
+        <!-- <button class="btn-outline" onclick="showPage('book')">Book a Session</button> -->
       </div>
     </div>
     <div class="hero-scroll">Scroll</div>
@@ -722,9 +724,9 @@
         </div>
       </div>
 
-      <div style="margin-top:36px;">
+      <!-- <div style="margin-top:36px;">
         <button class="btn-primary" onclick="showPage('book')" style="width:100%;">Book a Session →</button>
-      </div>
+      </div> -->
     </div>
 
     <!-- Right side: quick FAQ / what to expect -->
@@ -765,6 +767,7 @@
   </footer>
 </div>
 
+<!--
 <!-- ══════════════════════════════════════════
      BOOK A SESSION PAGE
      ══════════════════════════════════════════ -->
@@ -866,6 +869,7 @@
     </div>
   </footer>
 </div>
+-->
 
 <!-- ══════════════════════════════════════════
      JAVASCRIPT
@@ -1048,7 +1052,7 @@ function showPage(id, isBack) {
     const pn = document.getElementById('nav-portfolio');
     if (pn) pn.classList.add('active');
   }
-  if (id === 'contact' || id === 'book') {
+  if (id === 'contact') {
     const nb = document.getElementById('nav-contact');
     if (nb) nb.classList.add('active');
   }
@@ -1064,7 +1068,7 @@ function showPage(id, isBack) {
   if (LOCAL && sports.find(s => s.id === id)) initDrag(id);
 
   /* Set minimum date for booking form */
-  if (id === 'book') setMinDate();
+  // if (id === 'book') setMinDate();
 
   /* Sync contact select and nav */
   syncSelect();
@@ -1219,8 +1223,8 @@ function emptyState(sport) {
     <div class="empty-state">
       <div class="empty-icon">${sport.icon}</div>
       <div class="empty-title">Coming Soon</div>
-      <p class="empty-text">Photos from ${sport.label} are on their way.<br>Check back soon or get in touch to book a session.</p>
-      <button class="btn-primary" onclick="showPage('book')">Book a Session</button>
+      <p class="empty-text">Photos from ${sport.label} are on their way.<br>Check back soon or get in touch for inquiries.</p>
+      <button class="btn-primary" onclick="showPage('contact')">Contact Me</button>
     </div>`;
 }
 
@@ -1410,12 +1414,14 @@ function syncSelect() {
   const opts = '<option value="">Select a sport...</option>' +
     sports.map(s => `<option value="${s.id}">${s.label}</option>`).join('') +
     '<option value="other">Other</option>';
-  ['sport-select','booking-sport','book-sport-select'].forEach(id => {
+  // ['sport-select','booking-sport','book-sport-select'].forEach(id => {
+  ['sport-select','book-sport-select'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = opts;
   });
 }
 
+/*
 function setMinDate() {
   const today = new Date().toISOString().split('T')[0];
   const dateInput = document.getElementById('booking-date');
@@ -1427,7 +1433,9 @@ function setMinDate() {
     });
   }
 }
+*/
 
+/*
 function resetBookingForm() {
   document.querySelectorAll('#page-book .contact-right .form-ctrl').forEach(el => {
     if (el.tagName === 'SELECT') {
@@ -1437,11 +1445,13 @@ function resetBookingForm() {
     }
   });
 }
+*/
 
 function submitContact() {
   toast("Message sent! I'll be in touch within 24 hours.");
 }
 
+/*
 function submitBooking() {
   const firstName = document.getElementById('booking-first-name').value.trim();
   const lastName = document.getElementById('booking-last-name').value.trim();
@@ -1487,6 +1497,7 @@ function submitBooking() {
       toast('Submission failed. Please try again in a moment.');
     });
 }
+*/
 
 /* ─────────────────────────────────────────────────────────────
    BUILD ALL SPORT PAGES
@@ -1572,7 +1583,7 @@ document.addEventListener('keydown', e => {
   buildAllSportPages();
   buildNav();
   syncSelect();
-  setMinDate();
+  // setMinDate();
   showPage('home');
 })();
 
