@@ -1012,6 +1012,11 @@ let navHistory = [];
    PAGE NAVIGATION
    ───────────────────────────────────────────────────────────── */
 function showPage(id, isBack) {
+  /* Update URL hash */
+  if (!isBack) {
+    window.location.hash = id === 'home' ? '' : id;
+  }
+
   /* Push current page to history before navigating (unless this IS a back navigation) */
   const current = document.querySelector('.page.active');
   if (!isBack && current) {
@@ -1074,6 +1079,18 @@ function showPage(id, isBack) {
   syncSelect();
   buildNav();
 }
+
+/* Get page ID from URL hash */
+function getPageFromHash() {
+  const hash = window.location.hash.slice(1); /* Remove # */
+  return hash || 'home';
+}
+
+/* Listen for hash changes (browser back/forward) */
+window.addEventListener('hashchange', () => {
+  const pageId = getPageFromHash();
+  showPage(pageId, true); /* true = this is a hash change, not a user click */
+});
 
 /* Go back to the previous page in the navigation stack */
 function goBack() {
@@ -1231,13 +1248,13 @@ function emptyState(sport) {
 /* Single photo card — admin controls (delete, drag) only shown locally */
 function photoCard(img, index, sportId) {
   return `
-    <div class="photo-card" id="card-${img.id}" ${LOCAL?'draggable="true"':''} data-id="${img.id}" data-sport="${sportId}" data-index="${index}" oncontextmenu="return false">
-      <img src="${img.src}" alt="Zephera Photography" loading="lazy" draggable="false" oncontextmenu="return false" onclick="LB.open('${sportId}',${index})">
+    <div class="photo-card" id="card-${img.id}" ${LOCAL?'draggable="true"':''} data-id="${img.id}" data-sport="${sportId}" data-index="${index}" oncontextmenu="return false" style="cursor:pointer" onclick="LB.open('${sportId}',${index})">
+      <img src="${img.src}" alt="Zephera Photography" loading="lazy" draggable="false" oncontextmenu="return false">
       <div class="card-overlay">
         ${LOCAL ? `<span class="drag-handle" title="Drag to reorder">⠿</span>` : ''}
         <div class="card-actions">
-          <button class="card-btn" title="View fullscreen" onclick="LB.open('${sportId}',${index})">⤢</button>
-          ${LOCAL ? `<button class="card-btn del" title="Remove" onclick="removePhoto('${sportId}','${img.id}')">✕</button>` : ''}
+          <button class="card-btn" title="View fullscreen" onclick="event.stopPropagation(); LB.open('${sportId}',${index})">⤢</button>
+          ${LOCAL ? `<button class="card-btn del" title="Remove" onclick="event.stopPropagation(); removePhoto('${sportId}','${img.id}')">✕</button>` : ''}
         </div>
       </div>
     </div>`;
@@ -1584,7 +1601,8 @@ document.addEventListener('keydown', e => {
   buildNav();
   syncSelect();
   // setMinDate();
-  showPage('home');
+  const initialPage = getPageFromHash();
+  showPage(initialPage);
 })();
 
 </script>
