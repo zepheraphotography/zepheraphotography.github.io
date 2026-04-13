@@ -398,7 +398,7 @@
     .footer-lnk:hover { color:var(--accent); }
 
     /* ── TOAST ──────────────────────────────────────────────── */
-    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--bg); padding:11px 22px; border-radius:40px; font-family:var(--fd); font-size:12px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; opacity:0; pointer-events:none; z-index:600; white-space:nowrap; transition:opacity 0.3s, transform 0.3s var(--ease); }
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(24px); background:var(--ink); color:var(--bg); padding:16px 30px; border-radius:999px; font-family:var(--fd); font-size:14px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; opacity:0; pointer-events:none; z-index:600; min-width:300px; max-width:calc(100vw - 40px); text-align:center; box-shadow:0 18px 50px rgba(0,0,0,0.18); transition:opacity 0.3s, transform 0.3s var(--ease); }
     #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
     /* ═══════════════════════════════════════════════════════
@@ -693,8 +693,8 @@
           <div class="c-icon">✉</div>
           <div>
             <span class="c-lbl">Email</span>
-            <!-- EDIT: your email -->
-            <span class="c-val"><a href="mailto:zepheraphotography@gmail.com">zepheraphotography@gmail.com"</a></span>
+            <!-- EDIT: your email; update this address for the contact link users see. -->
+            <span class="c-val"><a href="mailto:zepheraphotography@gmail.com">zepheraphotography@gmail.com</a></span>
           </div>
         </div>
         <div class="c-info-item">
@@ -796,8 +796,8 @@
           <div class="c-icon">✉</div>
           <div>
             <span class="c-lbl">Prefer Email?</span>
-            <!-- EDIT: your email -->
-            <span class="c-val"><a href="mailto:zepheraphotography@gmail.com">zepheraphotography@gmail.com"</a></span>
+            <!-- EDIT: your email; update this address for the contact link users see. -->
+            <span class="c-val"><a href="mailto:zepheraphotography@gmail.com">zepheraphotography@gmail.com</a></span>
           </div>
         </div>
       </div>
@@ -807,30 +807,30 @@
       <div class="form-title">Event Details</div>
 
       <div class="form-row">
-        <div class="form-group"><label class="form-lbl">First Name *</label><input type="text" class="form-ctrl" placeholder="Jane"></div>
-        <div class="form-group"><label class="form-lbl">Last Name *</label><input type="text" class="form-ctrl" placeholder="Smith"></div>
+        <div class="form-group"><label class="form-lbl">First Name *</label><input id="booking-first-name" type="text" class="form-ctrl" placeholder="Jane"></div>
+        <div class="form-group"><label class="form-lbl">Last Name *</label><input id="booking-last-name" type="text" class="form-ctrl" placeholder="Smith"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-lbl">Email *</label><input type="email" class="form-ctrl" placeholder="jane@example.com"></div>
-        <div class="form-group"><label class="form-lbl">Phone</label><input type="tel" class="form-ctrl" placeholder="+1 (555) 000-0000"></div>
+        <div class="form-group"><label class="form-lbl">Email *</label><input id="booking-email" type="email" class="form-ctrl" placeholder="jane@example.com"></div>
+        <div class="form-group"><label class="form-lbl">Phone</label><input id="booking-phone" type="tel" class="form-ctrl" placeholder="+1 (555) 000-0000"></div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-lbl">Sport / Event Type *</label>
-          <select class="form-ctrl" id="book-sport-select">
+          <select id="booking-sport" class="form-ctrl">
             <option value="">Select a sport...</option>
           </select>
         </div>
-        <div class="form-group"><label class="form-lbl">Event Date *</label><input type="date" class="form-ctrl"></div>
+        <div class="form-group"><label class="form-lbl">Event Date *</label><input id="booking-date" type="date" class="form-ctrl"></div>
       </div>
       <div class="form-row">
-        <div class="form-group"><label class="form-lbl">Event Location / City *</label><input type="text" class="form-ctrl" placeholder="e.g. Los Angeles, CA"></div>
-        <div class="form-group"><label class="form-lbl">Team / Organization Name</label><input type="text" class="form-ctrl" placeholder="e.g. LA Tigers"></div>
+        <div class="form-group"><label class="form-lbl">Event Location / City *</label><input id="booking-location" type="text" class="form-ctrl" placeholder="e.g. Los Angeles, CA"></div>
+        <div class="form-group"><label class="form-lbl">Team / Organization Name</label><input id="booking-team" type="text" class="form-ctrl" placeholder="e.g. LA Tigers"></div>
       </div>
       <div class="form-row">
         <div class="form-group">
           <label class="form-lbl">Estimated No. of Athletes</label>
-          <select class="form-ctrl">
+          <select id="booking-athletes" class="form-ctrl">
             <option value="">Select...</option>
             <option>1–10</option>
             <option>11–30</option>
@@ -840,7 +840,7 @@
         </div>
         <div class="form-group">
           <label class="form-lbl">Budget Range</label>
-          <select class="form-ctrl">
+          <select id="booking-budget" class="form-ctrl">
             <option value="">Select...</option>
             <option>Under $300</option>
             <option>$300 – $600</option>
@@ -851,7 +851,7 @@
         </div>
       </div>
       <div class="form-row full">
-        <div class="form-group"><label class="form-lbl">Additional Details</label><textarea class="form-ctrl" placeholder="Anything else I should know — duration of event, specific shots you want, turnaround needs, etc."></textarea></div>
+        <div class="form-group"><label class="form-lbl">Additional Details</label><textarea id="booking-details" class="form-ctrl" placeholder="Anything else I should know — duration of event, specific shots you want, turnaround needs, etc."></textarea></div>
       </div>
       <button class="form-submit" onclick="submitBooking()">Send Booking Request</button>
     </div>
@@ -1131,9 +1131,7 @@ function buildNav() {
           ${s.label}
           <span class="dd-count">${(store[s.id]||[]).length}</span>
         </button>
-      `).join('') +
-      `<div class="dd-divider"></div>
-       <button class="dd-item dd-manage" onclick="openModal();closeDD()">⚙ Manage Folders</button>`;
+      `).join('');
   }
 
   /* Mobile menu */
@@ -1144,7 +1142,6 @@ function buildNav() {
        <button class="mob-link" onclick="showPage('portfolio')">📂 All Sports</button>
        <div class="mob-sub">
          ${sports.map(s=>`<button class="mob-link ${activeSport===s.id?'active':''}" onclick="showPage('${s.id}')">${s.icon} ${s.label}</button>`).join('')}
-         ${LOCAL ? `<button class="mob-link" onclick="openModal();closeMob()" style="color:var(--accent)">⚙ Manage Folders</button>` : ''}
        </div>
        <button class="mob-link" onclick="showPage('contact')">✉ Contact</button>`;
   }
@@ -1404,9 +1401,19 @@ function syncSelect() {
   const opts = '<option value="">Select a sport...</option>' +
     sports.map(s => `<option value="${s.id}">${s.label}</option>`).join('') +
     '<option value="other">Other</option>';
-  ['sport-select','book-sport-select'].forEach(id => {
+  ['sport-select','booking-sport','book-sport-select'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = opts;
+  });
+}
+
+function resetBookingForm() {
+  document.querySelectorAll('#page-book .contact-right .form-ctrl').forEach(el => {
+    if (el.tagName === 'SELECT') {
+      el.selectedIndex = 0;
+    } else {
+      el.value = '';
+    }
   });
 }
 
@@ -1415,7 +1422,36 @@ function submitContact() {
 }
 
 function submitBooking() {
-  toast("Booking request sent! I'll confirm availability within 24 hours.");
+  const recipient = 'zepheraphotography@gmail.com';
+  const firstName = document.getElementById('booking-first-name').value.trim();
+  const lastName = document.getElementById('booking-last-name').value.trim();
+  const email = document.getElementById('booking-email').value.trim();
+  const phone = document.getElementById('booking-phone').value.trim();
+  const sport = document.getElementById('booking-sport').value;
+  const date = document.getElementById('booking-date').value;
+  const location = document.getElementById('booking-location').value.trim();
+  const team = document.getElementById('booking-team').value.trim();
+  const athletes = document.getElementById('booking-athletes').value;
+  const budget = document.getElementById('booking-budget').value;
+  const details = document.getElementById('booking-details').value.trim();
+
+  const subject = `Booking request from ${firstName || 'Guest'} ${lastName || ''}`.trim();
+  const body = `Name: ${firstName} ${lastName}\n` +
+    `Email: ${email}\n` +
+    `Phone: ${phone}\n` +
+    `Sport / Event Type: ${sport}\n` +
+    `Event Date: ${date}\n` +
+    `Location: ${location}\n` +
+    `Team / Organization: ${team}\n` +
+    `Estimated Athletes: ${athletes}\n` +
+    `Budget Range: ${budget}\n\n` +
+    `Additional Details:\n${details}`;
+
+  const encoded = `mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+  window.location.href = encoded;
+  resetBookingForm();
+  toast("Booking request sent! I’ll confirm availability within 24 hours.");
 }
 
 /* ─────────────────────────────────────────────────────────────
