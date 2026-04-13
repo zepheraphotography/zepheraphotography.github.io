@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Zephera Photography</title>
+  <title>Visuals by Zephera</title>
 
   <!--
   ════════════════════════════════════════════════════════════
-    ZEPHERA PHOTOGRAPHY — PORTFOLIO WEBSITE
+    VISUALS BY ZEPHERA — PORTFOLIO WEBSITE
     Single HTML file. Open in any browser. No install needed.
 
     HOW TO EDIT (use Cmd+F in VS Code to search):
@@ -533,7 +533,7 @@
 <div id="lightbox">
   <button class="lb-close" onclick="LB.close()">✕</button>
   <button class="lb-nav lb-prev" onclick="LB.nav(-1)">&#8592;</button>
-  <div class="lb-wrap"><img id="lb-img" src="" alt="Zephera Photography"></div>
+  <div class="lb-wrap"><img id="lb-img" src="" alt="Visuals by Zephera"></div>
   <button class="lb-nav lb-next" onclick="LB.nav(1)">&#8594;</button>
   <div class="lb-footer"><span class="lb-counter" id="lb-counter"></span></div>
 </div>
@@ -638,7 +638,7 @@
   </div>
 
   <footer>
-    <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
+    <span class="footer-copy">© 2025 Visuals by Zephera. All rights reserved.</span>
     <div class="footer-links">
       <button class="footer-btn" onclick="showPage('contact')">Contact</button>
       <!-- EDIT: update Instagram URL — search "zephera_photography" -->
@@ -664,7 +664,7 @@
   <!-- Sport cards injected here by buildPortfolioPage() -->
   <div class="portfolio-grid" id="portfolio-grid"></div>
   <footer>
-    <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
+    <span class="footer-copy">© 2025 Visuals by Zephera. All rights reserved.</span>
     <div class="footer-links">
       <button class="footer-btn" onclick="showPage('home')">Home</button>
       <button class="footer-btn" onclick="showPage('contact')">Contact</button>
@@ -758,7 +758,7 @@
   </div>
 
   <footer>
-    <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
+    <span class="footer-copy">© 2025 Visuals by Zephera. All rights reserved.</span>
     <div class="footer-links">
       <button class="footer-btn" onclick="showPage('home')">Home</button>
       <button class="footer-btn" onclick="showPage('portfolio')">Portfolio</button>
@@ -861,7 +861,7 @@
   </div>
 
   <footer>
-    <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
+    <span class="footer-copy">© 2025 Visuals by Zephera. All rights reserved.</span>
     <div class="footer-links">
       <button class="footer-btn" onclick="showPage('home')">Home</button>
       <button class="footer-btn" onclick="showPage('contact')">Contact</button>
@@ -1222,7 +1222,7 @@ function buildSportPage(id) {
     </div>
 
     <footer>
-      <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
+      <span class="footer-copy">© 2025 Visuals by Zephera. All rights reserved.</span>
       <div class="footer-links">
         <button class="footer-btn" onclick="showPage('home')">Home</button>
         <button class="footer-btn" onclick="showPage('contact')">Contact</button>
@@ -1249,7 +1249,7 @@ function emptyState(sport) {
 function photoCard(img, index, sportId) {
   return `
     <div class="photo-card" id="card-${img.id}" ${LOCAL?'draggable="true"':''} data-id="${img.id}" data-sport="${sportId}" data-index="${index}" oncontextmenu="return false" style="cursor:pointer" onclick="LB.open('${sportId}',${index})">
-      <img src="${img.src}" alt="Zephera Photography" loading="lazy" draggable="false" oncontextmenu="return false">
+      <img src="${img.src}" alt="Visuals by Zephera" loading="lazy" draggable="false" oncontextmenu="return false">
       <div class="card-overlay">
         ${LOCAL ? `<span class="drag-handle" title="Drag to reorder">⠿</span>` : ''}
         <div class="card-actions">
