@@ -1,1534 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Zephera Photography</title>
 
   <!--
-  ============================================================
+  ════════════════════════════════════════════════════════════
     ZEPHERA PHOTOGRAPHY — PORTFOLIO WEBSITE
-    Single-file HTML/CSS/JS — no build tools required
-    Open in any browser on Mac, Windows, or mobile
+    Single HTML file. Open in any browser. No install needed.
 
-    HOW TO EDIT:
-    ─────────────────────────────────────────────────────────
-    1. PHOTOGRAPHER NAME / TAGLINE
-       Search: "ZEPHERA" and "Freezing the moment"
-       Replace with your name/tagline
-
-    2. SPORTS / FOLDERS
-       Search: "/* ── INITIAL SPORT DATA" below in the JS
-       Add or remove entries from the `sportsData` array
-
-    3. CONTACT DETAILS
-       Search: "CONTACT DETAILS" in the HTML section
-
-    4. ACCENT COLOR
-       Search: "--accent:" in the CSS :root block
-
-    5. FONTS
-       Two Google Font imports at the top of <style>
-       Swap the font names and update --font-display / --font-body
-
-    6. DARK MODE COLORS
-       Search: "@media (prefers-color-scheme: dark)"
-    ─────────────────────────────────────────────────────────
+    HOW TO EDIT (use Cmd+F in VS Code to search):
+    ─────────────────────────────────────────────
+    1. PHOTOGRAPHER NAME   → search "ZEPHERA"
+    2. HERO TEXT           → search "FREEZE THE"
+    3. ABOUT TEXT          → search "Every game tells"
+    4. HERO + PHOTOS       → search "PHOTO MANIFEST"
+    5. R2 BUCKET URL       → search "R2_URL"
+    6. CONTACT DETAILS     → search "CONTACT DETAILS"
+    7. INSTAGRAM           → search "zephera_photography"
+    8. ADD/REMOVE SPORTS   → search "SPORT DATA"
+    9. ACCENT COLOR        → search "--accent:"
+    ─────────────────────────────────────────────
   -->
 
-  <!-- ── GOOGLE FONTS ── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;1,400&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
-    /* ============================================================
-       CSS VARIABLES — Edit these to restyle the entire site
-       ============================================================ */
+
+    /* ═══════════════════════════════════════════════════════
+       CSS VARIABLES
+       Edit these to restyle the entire site at once.
+       ═══════════════════════════════════════════════════════ */
     :root {
-      /* Light mode palette */
-      --bg:          #fafaf8;        /* Page background */
-      --bg-2:        #f2f0eb;        /* Subtle section background */
-      --ink:         #111111;        /* Primary text */
-      --ink-2:       #555550;        /* Secondary / muted text */
-      --rule:        #e0ddd6;        /* Borders and dividers */
-      --card-bg:     #ffffff;        /* Card / panel background */
-      --accent:      #b5451b;        /* Brand accent — change this color */
-      --accent-lite: rgba(181,69,27,0.08);
-      --white:       #ffffff;
-      --overlay:     rgba(10,10,10,0.94);
-
-      /* Typography */
-      --font-display: 'Barlow Condensed', sans-serif;
-      --font-body:    'Barlow', sans-serif;
-      --font-serif:   'Lora', serif;
-
-      /* Layout */
-      --nav-h:   64px;
-      --radius:  2px;
-      --ease:    cubic-bezier(0.22, 1, 0.36, 1);
-      --shadow:  0 2px 20px rgba(0,0,0,0.07);
+      --bg:         #fafaf8;
+      --bg2:        #f2f0eb;
+      --ink:        #111111;
+      --ink2:       #555550;
+      --rule:       #e0ddd6;
+      --card:       #ffffff;
+      --accent:     #b5451b;        /* ← your brand color */
+      --accentlite: rgba(181,69,27,0.08);
+      --overlay:    rgba(8,8,8,0.96);
+      --navh:       64px;
+      --ease:       cubic-bezier(0.22,1,0.36,1);
+      --fd:         'Barlow Condensed', sans-serif;
+      --fb:         'Barlow', sans-serif;
+      --fs:         'Lora', serif;
     }
 
-    /* ── DARK MODE OVERRIDES ──────────────────────────────────── */
+    /* ── DARK MODE ─────────────────────────────────────────
+       Every color is explicitly set so nothing looks broken.
+       ────────────────────────────────────────────────────── */
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg:          #131313;
-        --bg-2:        #1c1c1c;
-        --ink:         #f0ede8;
-        --ink-2:       #999690;
-        --rule:        #2e2e2b;
-        --card-bg:     #1e1e1b;
-        --accent:      #d4622a;        /* Slightly brighter in dark mode */
-        --accent-lite: rgba(212,98,42,0.12);
-        --white:       #f0ede8;
-        --overlay:     rgba(0,0,0,0.97);
-        --shadow:      0 2px 20px rgba(0,0,0,0.4);
+        --bg:         #131313;
+        --bg2:        #1c1c1c;
+        --ink:        #f0ede8;
+        --ink2:       #999690;
+        --rule:       #2e2e2b;
+        --card:       #1e1e1b;
+        --accent:     #d4622a;
+        --accentlite: rgba(212,98,42,0.12);
+        --overlay:    rgba(0,0,0,0.97);
       }
     }
 
-    /* ============================================================
-       RESET & BASE
-       ============================================================ */
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    /* ── RESET ─────────────────────────────────────────────── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+    body { background:var(--bg); color:var(--ink); font-family:var(--fb); font-weight:300; font-size:16px; line-height:1.6; min-height:100dvh; }
+    img  { display:block; max-width:100%; -webkit-user-drag:none; }
+    button { font-family:var(--fb); }
+    a { color:inherit; text-decoration:none; }
+    ::-webkit-scrollbar { width:4px; }
+    ::-webkit-scrollbar-track { background:var(--bg); }
+    ::-webkit-scrollbar-thumb { background:var(--rule); border-radius:2px; }
 
-    body {
-      background: var(--bg);
-      color: var(--ink);
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: 16px;
-      line-height: 1.6;
-      min-height: 100dvh;
-      transition: background 0.3s, color 0.3s;
-    }
+    /* ── PAGE SYSTEM ────────────────────────────────────────── */
+    .page { display:none; min-height:100dvh; padding-top:var(--navh); animation:pagein 0.35s var(--ease) both; }
+    .page.active { display:block; }
+    @keyframes pagein { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
 
-    img { display: block; max-width: 100%; }
-    button { font-family: var(--font-body); }
-    a { color: inherit; text-decoration: none; }
-
-    /* Scrollbar */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 2px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--ink-2); }
-
-    /* ============================================================
-       UTILITY CLASSES
-       ============================================================ */
-    .label {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-    }
-    .accent-dot::before {
-      content: '';
-      display: inline-block;
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      margin-right: 8px;
-      vertical-align: middle;
-    }
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
-    }
-
-    /* ============================================================
-       HEADER & NAVIGATION
-       ============================================================ */
+    /* ═══════════════════════════════════════════════════════
+       HEADER & NAV
+       ═══════════════════════════════════════════════════════ */
     header {
-      position: fixed; top: 0; left: 0; right: 0;
-      height: var(--nav-h);
-      background: var(--bg);
-      border-bottom: 1px solid var(--rule);
-      z-index: 200;
-      display: flex; align-items: center;
-      padding: 0 32px;
-      gap: 0;
-      transition: background 0.3s, border-color 0.3s;
+      position:fixed; top:0; left:0; right:0; height:var(--navh);
+      background:var(--bg); border-bottom:1px solid var(--rule);
+      z-index:200; display:flex; align-items:center; padding:0 32px;
     }
-
-    /* Logo */
     .logo {
-      font-family: var(--font-display);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ink);
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: opacity 0.2s;
+      font-family:var(--fd); font-size:22px; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      color:var(--ink); cursor:pointer; flex-shrink:0;
+      border:none; background:none; transition:opacity 0.2s;
     }
-    .logo:hover { opacity: 0.7; }
-    .logo .logo-dot { color: var(--accent); }
+    .logo:hover { opacity:0.7; }
+    .logo-dot { color:var(--accent); }
+    .nav-spacer { flex:1; }
 
-    /* Spacer */
-    .nav-spacer { flex: 1; }
+    /* Desktop nav links */
+    nav { display:flex; align-items:center; gap:4px; }
+    .nav-btn {
+      font-family:var(--fd); font-size:13px; font-weight:600;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--ink2); padding:8px 14px; border:none; background:none;
+      cursor:pointer; border-radius:2px; white-space:nowrap;
+      transition:color 0.2s, background 0.2s;
+    }
+    .nav-btn:hover  { color:var(--ink); background:var(--accentlite); }
+    .nav-btn.active { color:var(--accent); }
 
-    /* Nav links */
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+    /* Portfolio dropdown */
+    .nav-dropdown { position:relative; }
+    .nav-dd-trigger { display:flex; align-items:center; gap:6px; }
+    .nav-dd-trigger .caret { width:14px; height:14px; transition:transform 0.3s var(--ease); flex-shrink:0; }
+    .nav-dropdown.open .caret { transform:rotate(180deg); }
 
-    .nav-link {
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-      padding: 8px 14px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      border: none; background: none;
-      transition: color 0.2s, background 0.2s;
-      white-space: nowrap;
+    .nav-dd-panel {
+      position:absolute; top:calc(100% + 8px); right:0;
+      min-width:210px; background:var(--card);
+      border:1px solid var(--rule); border-radius:4px;
+      padding:6px; opacity:0; pointer-events:none;
+      transform:translateY(-8px); z-index:300;
+      transition:opacity 0.22s var(--ease), transform 0.22s var(--ease);
     }
-    .nav-link:hover { color: var(--ink); background: var(--accent-lite); }
-    .nav-link.active { color: var(--accent); }
+    .nav-dropdown.open .nav-dd-panel { opacity:1; pointer-events:all; transform:translateY(0); }
 
-    /* Portfolio DROPDOWN wrapper */
-    .nav-dropdown {
-      position: relative;
+    .dd-item {
+      display:flex; align-items:center; gap:10px; width:100%;
+      padding:10px 12px; border:none; background:none;
+      font-family:var(--fd); font-size:13px; font-weight:500;
+      letter-spacing:0.08em; text-transform:uppercase;
+      color:var(--ink2); cursor:pointer; border-radius:2px; text-align:left;
+      transition:background 0.15s, color 0.15s;
     }
+    .dd-item:hover  { background:var(--accentlite); color:var(--ink); }
+    .dd-item.active { color:var(--accent); }
+    .dd-icon  { font-size:16px; flex-shrink:0; }
+    .dd-count { margin-left:auto; font-size:10px; font-weight:600; color:var(--ink2); background:var(--bg2); padding:2px 7px; border-radius:10px; }
+    .dd-divider { height:1px; background:var(--rule); margin:6px 0; }
+    .dd-manage  { color:var(--accent) !important; font-size:11px !important; }
 
-    .nav-dropdown-trigger {
-      display: flex; align-items: center; gap: 6px;
+    /* Book a session button */
+    .nav-book {
+      font-family:var(--fd); font-size:12px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      color:#fff; background:var(--accent); border:none;
+      padding:9px 20px; border-radius:2px; cursor:pointer;
+      margin-left:8px; white-space:nowrap; transition:opacity 0.2s;
     }
-    .nav-dropdown-trigger .caret {
-      width: 14px; height: 14px;
-      transition: transform 0.3s var(--ease);
-      flex-shrink: 0;
-    }
-    .nav-dropdown.open .caret { transform: rotate(180deg); }
+    .nav-book:hover { opacity:0.85; }
 
-    /* Dropdown panel */
-    .nav-dropdown-panel {
-      position: absolute; top: calc(100% + 8px); right: 0;
-      min-width: 200px;
-      background: var(--card-bg);
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      box-shadow: var(--shadow);
-      padding: 6px;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(-8px);
-      transition: opacity 0.25s var(--ease), transform 0.25s var(--ease);
-      z-index: 300;
-    }
-    .nav-dropdown.open .nav-dropdown-panel {
-      opacity: 1;
-      pointer-events: all;
-      transform: translateY(0);
-    }
+    /* Hamburger */
+    .hamburger { display:none; flex-direction:column; gap:5px; width:36px; height:36px; padding:8px; border:none; background:none; cursor:pointer; margin-left:auto; }
+    .hamburger span { display:block; width:100%; height:1.5px; background:var(--ink); border-radius:2px; transition:transform 0.3s, opacity 0.3s; }
+    .hamburger.open span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity:0; }
+    .hamburger.open span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
 
-    .dropdown-item {
-      display: flex; align-items: center; gap: 10px;
-      width: 100%;
-      padding: 10px 12px;
-      border: none; background: none;
-      font-family: var(--font-display);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-      cursor: pointer;
-      border-radius: var(--radius);
-      text-align: left;
-      transition: background 0.15s, color 0.15s;
+    /* Mobile menu */
+    .mob-menu { display:none; position:fixed; top:var(--navh); left:0; right:0; background:var(--bg); border-bottom:1px solid var(--rule); padding:16px 24px 24px; z-index:199; flex-direction:column; gap:0; }
+    .mob-menu.open { display:flex; }
+    .mob-link {
+      display:flex; align-items:center; padding:12px 8px;
+      border-bottom:1px solid var(--rule); font-family:var(--fd);
+      font-size:15px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+      color:var(--ink2); background:none; border-top:none; border-left:none; border-right:none;
+      cursor:pointer; text-align:left; width:100%; transition:color 0.2s;
     }
-    .dropdown-item:hover { background: var(--accent-lite); color: var(--ink); }
-    .dropdown-item.active { color: var(--accent); }
+    .mob-link:hover  { color:var(--ink); }
+    .mob-link.active { color:var(--accent); }
+    .mob-sub { padding-left:24px; display:flex; flex-direction:column; }
 
-    .dropdown-item .di-icon { font-size: 16px; flex-shrink: 0; }
-    .dropdown-item .di-count {
-      margin-left: auto;
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      color: var(--ink-2);
-      background: var(--bg-2);
-      padding: 2px 7px;
-      border-radius: 10px;
-    }
-
-    /* Dropdown divider */
-    .dropdown-divider {
-      height: 1px;
-      background: var(--rule);
-      margin: 6px 0;
-    }
-
-    /* Manage folders button inside dropdown */
-    .dropdown-manage {
-      color: var(--accent) !important;
-      font-size: 11px !important;
-    }
-
-    /* Contact button in nav */
-    .nav-contact-btn {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--white);
-      background: var(--accent);
-      border: none;
-      padding: 9px 20px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      margin-left: 8px;
-      transition: opacity 0.2s;
-      white-space: nowrap;
-    }
-    .nav-contact-btn:hover { opacity: 0.85; }
-
-    /* ── MOBILE NAV (hamburger) ──────────────────────── */
-    .hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      width: 36px; height: 36px;
-      padding: 8px;
-      border: none; background: none;
-      cursor: pointer;
-      margin-left: auto;
-    }
-    .hamburger span {
-      display: block;
-      width: 100%; height: 1.5px;
-      background: var(--ink);
-      border-radius: 2px;
-      transition: transform 0.3s, opacity 0.3s;
-    }
-    .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
-    .hamburger.open span:nth-child(2) { opacity: 0; }
-    .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-
-    /* Mobile menu drawer */
-    .mobile-menu {
-      display: none;
-      position: fixed; top: var(--nav-h); left: 0; right: 0;
-      background: var(--bg);
-      border-bottom: 1px solid var(--rule);
-      padding: 16px 24px 24px;
-      z-index: 199;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .mobile-menu.open { display: flex; }
-
-    .mobile-nav-link {
-      display: flex; align-items: center;
-      padding: 12px 8px;
-      border-bottom: 1px solid var(--rule);
-      font-family: var(--font-display);
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-      background: none; border-top: none; border-left: none; border-right: none;
-      cursor: pointer;
-      text-align: left;
-      width: 100%;
-      transition: color 0.2s;
-    }
-    .mobile-nav-link:hover { color: var(--ink); }
-    .mobile-nav-link.active { color: var(--accent); }
-    .mobile-nav-link .mdi { margin-right: 10px; font-size: 16px; }
-
-    .mobile-sport-links {
-      padding-left: 24px;
-      display: flex; flex-direction: column;
-      gap: 0;
-    }
-
-    /* ============================================================
-       PAGE SYSTEM — only .active page is visible
-       ============================================================ */
-    .page {
-      display: none;
-      min-height: 100dvh;
-      padding-top: var(--nav-h);
-      animation: pageIn 0.4s var(--ease) both;
-    }
-    .page.active { display: block; }
-
-    @keyframes pageIn {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ============================================================
-       HOME PAGE
-       ============================================================ */
-
-    /* Hero */
+    /* ═══════════════════════════════════════════════════════
+       HOME PAGE — HERO
+       ═══════════════════════════════════════════════════════ */
     .hero {
-      min-height: calc(100dvh - var(--nav-h));
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 64px 40px 56px;
-      position: relative;
-      overflow: hidden;
-      /* base bg color shown while image loads */
-      background-color: #0d0d0d;
+      min-height:calc(100dvh - var(--navh));
+      display:flex; flex-direction:column; justify-content:flex-end;
+      padding:64px 40px 56px; position:relative; overflow:hidden;
+      background-color:#0d0d0d;
+      /* EDIT: hero background — update filename in R2 URL */
+      background-image:url('https://pub-69a427f09bfb4986a3f02bc906620467.r2.dev/baseball/DSC_5773.jpg');
+      background-size:cover; background-position:center 30%;
     }
-
-    /*
-      Hero background image — loaded from Unsplash (free to use).
-      EDIT: To use YOUR OWN photo as the hero background:
-        1. Place your image in the same folder as this HTML file
-        2. Replace the URL below with: url('your-filename.jpg')
-    */
-    /*
-      Hero background image — your own photo served from Cloudflare R2.
-      EDIT: To change the hero photo, upload a new image to R2 and
-      update the URL below with the new filename.
-    */
-    .hero {
-      background-image: url('https://pub-69a427f09bfb4986a3f02bc906620467.r2.dev/baseball/DSC_5773.jpg');
-      background-size: cover;
-      background-position: center 30%;
-      background-repeat: no-repeat;
-    }
-
-    /* Left-to-right dark gradient — keeps text sharp over any photo */
     .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        linear-gradient(105deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.60) 50%, rgba(0,0,0,0.25) 100%),
-        linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 45%);
-      pointer-events: none;
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(105deg,rgba(0,0,0,0.88) 0%,rgba(0,0,0,0.58) 50%,rgba(0,0,0,0.22) 100%),
+                 linear-gradient(to top,rgba(0,0,0,0.55) 0%,transparent 45%);
+      pointer-events:none;
     }
-
-    /* Edge vignette for depth */
-    .hero::after {
-      content: '';
-      position: absolute; inset: 0;
-      box-shadow: inset 0 0 140px rgba(0,0,0,0.30);
-      pointer-events: none;
-    }
-
-    .hero-content { position: relative; z-index: 1; max-width: 800px; }
-
+    .hero::after { content:''; position:absolute; inset:0; box-shadow:inset 0 0 140px rgba(0,0,0,0.3); pointer-events:none; }
+    .hero-content { position:relative; z-index:1; max-width:800px; }
     .hero-eyebrow {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-      display: flex; align-items: center; gap: 14px;
+      font-family:var(--fd); font-size:12px; font-weight:600;
+      letter-spacing:0.22em; text-transform:uppercase; color:var(--accent);
+      margin-bottom:20px; display:flex; align-items:center; gap:14px;
     }
-    .hero-eyebrow::before {
-      content: '';
-      display: block; width: 28px; height: 1px;
-      background: var(--accent);
-    }
-
+    .hero-eyebrow::before { content:''; display:block; width:28px; height:1px; background:var(--accent); }
     .hero-title {
-      font-family: var(--font-display);
-      font-size: clamp(60px, 10vw, 140px);
-      font-weight: 700;
-      letter-spacing: 0.01em;
-      line-height: 0.9;
-      color: #ffffff;
-      margin-bottom: 28px;
-      text-shadow: 0 2px 24px rgba(0,0,0,0.5);
+      font-family:var(--fd); font-size:clamp(60px,10vw,140px); font-weight:700;
+      letter-spacing:0.01em; line-height:0.9; color:#fff; margin-bottom:28px;
+      text-shadow:0 2px 24px rgba(0,0,0,0.5);
     }
-    .hero-title em {
-      font-family: var(--font-serif);
-      font-style: italic;
-      font-weight: 400;
-      color: rgba(240,237,232,0.45);
-      font-size: 0.72em;
-      display: block;
-    }
+    .hero-title em { font-family:var(--fs); font-style:italic; font-weight:400; color:rgba(240,237,232,0.45); font-size:0.72em; display:block; }
+    .hero-sub { font-size:16px; font-weight:400; color:rgba(255,255,255,0.85); max-width:440px; line-height:1.7; margin-bottom:44px; text-shadow:0 1px 8px rgba(0,0,0,0.5); }
+    .hero-actions { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .hero-scroll { position:absolute; bottom:28px; right:40px; writing-mode:vertical-rl; font-family:var(--fd); font-size:10px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:rgba(240,237,232,0.3); z-index:1; display:flex; align-items:center; gap:10px; }
+    .hero-scroll::after { content:''; display:block; width:1px; height:48px; background:rgba(240,237,232,0.2); }
 
-    .hero-sub {
-      font-size: 16px;
-      font-weight: 400;
-      color: rgba(255,255,255,0.85);
-      max-width: 440px;
-      line-height: 1.7;
-      margin-bottom: 44px;
-      text-shadow: 0 1px 8px rgba(0,0,0,0.5);
-    }
-
-    .hero-actions {
-      display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
-    }
-
+    /* ── BUTTONS ────────────────────────────────────────────── */
     .btn-primary {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 14px 28px;
-      cursor: pointer;
-      border-radius: var(--radius);
-      transition: opacity 0.2s, transform 0.2s;
-      white-space: nowrap;
+      font-family:var(--fd); font-size:12px; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      background:var(--accent); color:#fff; border:none;
+      padding:14px 28px; cursor:pointer; border-radius:2px;
+      transition:opacity 0.2s, transform 0.2s; white-space:nowrap;
     }
-    .btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn-primary:active { transform: translateY(0); }
-
+    .btn-primary:hover { opacity:0.88; transform:translateY(-1px); }
     .btn-outline {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      background: transparent;
-      color: rgba(240,237,232,0.75);
-      border: 1px solid rgba(240,237,232,0.25);
-      padding: 13px 26px;
-      cursor: pointer;
-      border-radius: var(--radius);
-      transition: border-color 0.2s, color 0.2s;
-      white-space: nowrap;
+      font-family:var(--fd); font-size:12px; font-weight:600;
+      letter-spacing:0.14em; text-transform:uppercase;
+      background:transparent; color:rgba(240,237,232,0.8);
+      border:1px solid rgba(240,237,232,0.3);
+      padding:13px 26px; cursor:pointer; border-radius:2px;
+      transition:border-color 0.2s, color 0.2s; white-space:nowrap;
     }
-    .btn-outline:hover { border-color: rgba(240,237,232,0.6); color: #f0ede8; }
-
-    /* Hero scroll indicator */
-    .hero-scroll {
-      position: absolute; bottom: 28px; right: 40px;
-      writing-mode: vertical-rl;
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(240,237,232,0.3);
-      z-index: 1;
-      display: flex; align-items: center; gap: 10px;
-    }
-    .hero-scroll::after {
-      content: '';
-      display: block;
-      width: 1px; height: 48px;
-      background: rgba(240,237,232,0.2);
-    }
-
-    /* About strip on home */
-    .about-strip {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      border-bottom: 1px solid var(--rule);
-    }
-    .about-strip-left {
-      padding: 56px 40px;
-      border-right: 1px solid var(--rule);
-    }
-    .about-strip-right {
-      padding: 56px 40px;
-      display: flex; flex-direction: column; justify-content: center;
-    }
-    .about-strip-title {
-      font-family: var(--font-display);
-      font-size: clamp(36px, 5vw, 56px);
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      line-height: 1;
-      margin-bottom: 20px;
-    }
-    .about-strip-title em {
-      font-family: var(--font-serif);
-      font-style: italic;
-      font-weight: 400;
-      color: var(--ink-2);
-      font-size: 0.85em;
-    }
-    .about-strip-text {
-      font-size: 15px;
-      color: var(--ink-2);
-      line-height: 1.8;
-      max-width: 400px;
-    }
-
-    /* Sports strip — replaces old stats row */
-    .sports-strip {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .sport-strip-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 20px 24px;
-      border: none;
-      background: transparent;
-      border-right: 1px solid var(--rule);
-      cursor: pointer;
-      text-align: left;
-      transition: background 0.2s;
-    }
-    .sport-strip-item:last-child { border-right: none; }
-    .sport-strip-item:hover { background: var(--accent-lite); }
-
-    .ssi-icon { font-size: 22px; flex-shrink: 0; }
-
-    .ssi-label {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--ink);
-      flex: 1;
-      line-height: 1.3;
-    }
-
-    .ssi-arrow {
-      font-size: 14px;
-      color: var(--accent);
-      opacity: 0;
-      transform: translateX(-4px);
-      transition: opacity 0.2s, transform 0.2s;
-    }
-    .sport-strip-item:hover .ssi-arrow { opacity: 1; transform: translateX(0); }
-
-    @media (max-width: 768px) {
-      .sports-strip {
-        grid-template-columns: 1fr 1fr;
-      }
-      .sport-strip-item:nth-child(2) { border-right: none; }
-      .sport-strip-item:nth-child(3) { border-top: 1px solid var(--rule); }
-      .sport-strip-item:nth-child(4) { border-top: 1px solid var(--rule); border-right: none; }
-      .sport-strip-item:nth-child(5) { border-top: 1px solid var(--rule); grid-column: 1 / -1; border-right: none; }
-    }
-
-    /* ============================================================
-       SPORT / GALLERY PAGE
-       ============================================================ */
-
-    /* Page header */
-    .gallery-header {
-      padding: 48px 40px 32px;
-      border-bottom: 1px solid var(--rule);
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .gallery-back {
-      display: flex; align-items: center; gap: 8px;
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-      background: none; border: none;
-      cursor: pointer;
-      padding: 0;
-      margin-bottom: 16px;
-      transition: color 0.2s;
-    }
-    .gallery-back:hover { color: var(--accent); }
-
-    .gallery-title-block { flex: 1; min-width: 0; }
-
-    .gallery-page-title {
-      font-family: var(--font-display);
-      font-size: clamp(48px, 8vw, 96px);
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      line-height: 0.92;
-      color: var(--ink);
-    }
-
-    .gallery-header-right {
-      display: flex; flex-direction: column; align-items: flex-end; gap: 12px;
-      flex-shrink: 0;
-    }
-
-    .gallery-photo-count {
-      text-align: right;
-    }
-    .gallery-photo-count .gc-num {
-      font-family: var(--font-display);
-      font-size: 40px;
-      font-weight: 700;
-      color: var(--accent);
-      line-height: 1;
-      display: block;
-    }
-    .gallery-photo-count .gc-label {
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-    }
-
-    /* Admin toolbar */
-    .admin-bar {
-      background: var(--bg-2);
-      border-bottom: 1px solid var(--rule);
-      padding: 10px 40px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .admin-bar-hint {
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      color: var(--ink-2);
-      flex: 1;
-      text-align: right;
-      padding-right: 12px;
-    }
-
-    .empty-state code {
-      font-family: monospace;
-      font-size: 12px;
-      background: var(--bg-2);
-      border: 1px solid var(--rule);
-      padding: 2px 6px;
-      border-radius: 3px;
-      color: var(--accent);
-    }
-
-    /* Small action buttons */
+    .btn-outline:hover { border-color:rgba(240,237,232,0.7); color:#f0ede8; }
     .btn-sm {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 7px 14px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: opacity 0.2s, background 0.2s, color 0.2s;
-      white-space: nowrap;
+      display:inline-flex; align-items:center; gap:6px;
+      font-family:var(--fd); font-size:10px; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      padding:7px 14px; border-radius:2px; cursor:pointer;
+      border:1px solid transparent; transition:opacity 0.2s, background 0.2s, color 0.2s; white-space:nowrap;
     }
-    .btn-sm-accent {
-      background: var(--accent); color: #fff;
-      border-color: var(--accent);
-    }
-    .btn-sm-accent:hover { opacity: 0.85; }
-    .btn-sm-ghost {
-      background: transparent;
-      color: var(--ink-2);
-      border-color: var(--rule);
-    }
-    .btn-sm-ghost:hover { border-color: var(--ink-2); color: var(--ink); }
-    .btn-sm-danger {
-      background: transparent;
-      color: #c0392b;
-      border-color: rgba(192,57,43,0.3);
-    }
-    .btn-sm-danger:hover { background: rgba(192,57,43,0.1); }
+    .btn-accent { background:var(--accent); color:#fff; border-color:var(--accent); }
+    .btn-accent:hover { opacity:0.85; }
+    .btn-ghost { background:transparent; color:var(--ink2); border-color:var(--rule); }
+    .btn-ghost:hover { border-color:var(--ink2); color:var(--ink); }
 
-    /* Gallery toolbar (view switcher) */
-    .gallery-toolbar {
-      padding: 14px 40px;
-      display: flex; align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--rule);
-      gap: 12px;
-      flex-wrap: wrap;
-    }
+    /* ── ABOUT STRIP ────────────────────────────────────────── */
+    .about-strip { display:grid; grid-template-columns:1fr 1fr; border-bottom:1px solid var(--rule); }
+    .about-left  { padding:56px 40px; border-right:1px solid var(--rule); }
+    .about-right { padding:56px 40px; display:flex; flex-direction:column; justify-content:center; }
+    .about-title { font-family:var(--fd); font-size:clamp(36px,5vw,56px); font-weight:700; letter-spacing:0.02em; line-height:1; margin-bottom:20px; }
+    .about-title em { font-family:var(--fs); font-style:italic; font-weight:400; color:var(--ink2); font-size:0.85em; }
+    .about-text { font-size:15px; color:var(--ink2); line-height:1.8; max-width:400px; }
 
-    .toolbar-left {
-      display: flex; align-items: center; gap: 8px;
+    /* ── SPORTS STRIP ───────────────────────────────────────── */
+    .sports-strip { display:grid; grid-template-columns:repeat(5,1fr); border-bottom:1px solid var(--rule); }
+    .sport-btn {
+      display:flex; align-items:center; gap:10px; padding:20px 24px;
+      border:none; background:transparent; border-right:1px solid var(--rule);
+      cursor:pointer; text-align:left; transition:background 0.2s;
     }
+    .sport-btn:last-child { border-right:none; }
+    .sport-btn:hover { background:var(--accentlite); }
+    .sport-icon  { font-size:22px; flex-shrink:0; }
+    .sport-label { font-family:var(--fd); font-size:12px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink); flex:1; line-height:1.3; }
+    .sport-arrow { font-size:14px; color:var(--accent); opacity:0; transform:translateX(-4px); transition:opacity 0.2s, transform 0.2s; }
+    .sport-btn:hover .sport-arrow { opacity:1; transform:translateX(0); }
 
-    .sort-hint {
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-    }
+    /* ═══════════════════════════════════════════════════════
+       GALLERY PAGE
+       ═══════════════════════════════════════════════════════ */
+    .gal-header { padding:48px 40px 32px; border-bottom:1px solid var(--rule); display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; }
+    .gal-back { display:flex; align-items:center; gap:8px; font-family:var(--fd); font-size:11px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink2); background:none; border:none; cursor:pointer; padding:0; margin-bottom:16px; transition:color 0.2s; }
+    .gal-back:hover { color:var(--accent); }
+    .gal-title-block { flex:1; min-width:0; }
+    .gal-title { font-family:var(--fd); font-size:clamp(48px,8vw,96px); font-weight:700; letter-spacing:0.02em; line-height:0.92; color:var(--ink); }
+    .gal-count-wrap { text-align:right; flex-shrink:0; }
+    .gal-count-num { font-family:var(--fd); font-size:40px; font-weight:700; color:var(--accent); line-height:1; display:block; }
+    .gal-count-lbl { font-family:var(--fd); font-size:10px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink2); }
 
-    /* View toggle buttons */
-    .view-toggle { display: flex; gap: 3px; }
-    .view-btn {
-      width: 30px; height: 30px;
-      border: 1px solid var(--rule);
-      background: transparent;
-      border-radius: var(--radius);
-      color: var(--ink-2);
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-    .view-btn.active, .view-btn:hover {
-      background: var(--ink);
-      color: var(--white);
-      border-color: var(--ink);
-    }
-    /* dark mode: flip to light */
-    @media (prefers-color-scheme: dark) {
-      .view-btn.active, .view-btn:hover {
-        background: var(--ink);
-        color: var(--bg);
-        border-color: var(--ink);
-      }
-    }
+    /* Admin bar — only shown on localhost, never on live site */
+    .admin-bar { background:var(--bg2); border-bottom:1px solid var(--rule); padding:10px 40px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .admin-label { font-family:var(--fd); font-size:10px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink2); flex:1; }
+    .admin-hint  { font-family:var(--fd); font-size:10px; color:var(--ink2); flex:2; }
 
-    /* ── MASONRY GALLERY GRID ───────────────────────── */
-    .gallery-wrap { padding: 24px 40px 64px; }
+    /* Toolbar */
+    .gal-toolbar { padding:14px 40px; display:flex; align-items:center; justify-content:flex-end; border-bottom:1px solid var(--rule); }
+    .view-toggle { display:flex; gap:3px; }
+    .view-btn { width:30px; height:30px; border:1px solid var(--rule); background:transparent; border-radius:2px; color:var(--ink2); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s, color 0.15s, border-color 0.15s; }
+    .view-btn.active, .view-btn:hover { background:var(--ink); color:var(--bg); border-color:var(--ink); }
 
-    .masonry-grid {
-      columns: 4;
-      column-gap: 8px;
-    }
-    .masonry-grid.cols-3 { columns: 3; }
-    .masonry-grid.cols-2 { columns: 2; }
-    .masonry-grid.cols-1 { columns: 1; }
+    /* Masonry grid */
+    .gal-wrap { padding:24px 40px 64px; }
+    .masonry { columns:4; column-gap:8px; }
+    .masonry.c3 { columns:3; }
+    .masonry.c2 { columns:2; }
+    .masonry.c1 { columns:1; }
 
-    /* Each photo card */
-    .photo-card {
-      break-inside: avoid;
-      margin-bottom: 8px;
-      position: relative;
-      overflow: hidden;
-      background: var(--bg-2);
-      border-radius: var(--radius);
-      cursor: grab;
-      animation: fadeIn 0.4s var(--ease) both;
-      touch-action: none; /* needed for drag on mobile */
-    }
-    .photo-card.dragging {
-      opacity: 0.4;
-      cursor: grabbing;
-    }
-    .photo-card.drag-over {
-      outline: 2px dashed var(--accent);
-      outline-offset: 2px;
-    }
+    /* Photo card */
+    .photo-card { break-inside:avoid; margin-bottom:8px; position:relative; overflow:hidden; background:var(--bg2); border-radius:2px; animation:fadein 0.4s var(--ease) both; }
+    .photo-card img { width:100%; display:block; border-radius:2px; transition:transform 0.5s var(--ease); cursor:zoom-in; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+    .photo-card:hover img { transform:scale(1.03); }
+    .card-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(0,0,0,0.7) 0%,transparent 45%); opacity:0; transition:opacity 0.3s; border-radius:2px; display:flex; align-items:flex-end; justify-content:flex-end; padding:12px; }
+    .photo-card:hover .card-overlay { opacity:1; }
+    .card-actions { display:flex; gap:6px; }
+    .card-btn { width:32px; height:32px; border-radius:50%; border:1px solid rgba(255,255,255,0.3); background:rgba(0,0,0,0.5); backdrop-filter:blur(4px); color:#fff; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s; }
+    .card-btn:hover { background:rgba(255,255,255,0.2); }
+    .card-btn.del:hover { background:rgba(192,57,43,0.75); }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.97); }
-      to   { opacity: 1; transform: scale(1); }
-    }
+    /* Drag (local only) */
+    .photo-card.dragging  { opacity:0.35; }
+    .photo-card.drag-over { outline:2px dashed var(--accent); outline-offset:2px; }
+    .drag-handle { color:rgba(255,255,255,0.5); font-size:16px; cursor:grab; padding:4px; margin-right:auto; }
 
-    .photo-card img {
-      width: 100%;
-      display: block;
-      border-radius: var(--radius);
-      transition: transform 0.5s var(--ease);
-      pointer-events: none; /* prevent image drag */
-    }
-    .photo-card:hover img { transform: scale(1.03); }
-
-    /* Hover overlay */
-    .photo-card-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 45%);
-      opacity: 0;
-      transition: opacity 0.3s;
-      border-radius: var(--radius);
-      display: flex;
-      align-items: flex-end; justify-content: space-between;
-      padding: 12px;
-    }
-    .photo-card:hover .photo-card-overlay { opacity: 1; }
-
-    .photo-card-actions {
-      display: flex; gap: 6px;
-    }
-
-    .photo-icon-btn {
-      width: 32px; height: 32px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.3);
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      color: #fff;
-      font-size: 13px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, border-color 0.15s;
-    }
-    .photo-icon-btn:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.7); }
-    .photo-icon-btn.delete:hover { background: rgba(192,57,43,0.7); border-color: rgba(192,57,43,0.8); }
-
-    .drag-handle {
-      color: rgba(255,255,255,0.5);
-      font-size: 16px;
-      cursor: grab;
-      padding: 4px;
-      line-height: 1;
-    }
-
-    /* Drop zone (drag & drop upload area) */
-    .drop-zone {
-      border: 2px dashed var(--rule);
-      border-radius: 6px;
-      padding: 56px 32px;
-      text-align: center;
-      margin-bottom: 24px;
-      transition: border-color 0.25s, background 0.25s;
-      display: none; /* shown via JS */
-    }
-    .drop-zone.visible { display: block; }
-    .drop-zone.active  { border-color: var(--accent); background: var(--accent-lite); }
-
-    .drop-zone-icon { font-size: 36px; margin-bottom: 12px; opacity: 0.4; }
-    .drop-zone-text {
-      font-size: 14px;
-      color: var(--ink-2);
-      line-height: 1.7;
-    }
-    .drop-zone-text strong { color: var(--ink); font-weight: 500; }
+    @keyframes fadein { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }
 
     /* Empty state */
-    .empty-state {
-      text-align: center;
-      padding: 80px 32px;
-    }
-    .empty-state-icon { font-size: 48px; opacity: 0.2; margin-bottom: 16px; }
-    .empty-state-title {
-      font-family: var(--font-serif);
-      font-style: italic;
-      font-size: 24px;
-      color: var(--ink-2);
-      margin-bottom: 10px;
-    }
-    .empty-state-text { font-size: 14px; color: var(--ink-2); margin-bottom: 28px; }
+    .empty-state { text-align:center; padding:80px 32px; }
+    .empty-icon  { font-size:48px; opacity:0.2; margin-bottom:16px; }
+    .empty-title { font-family:var(--fs); font-style:italic; font-size:24px; color:var(--ink2); margin-bottom:10px; }
+    .empty-text  { font-size:14px; color:var(--ink2); margin-bottom:28px; line-height:1.7; }
 
-    /* ============================================================
-       MANAGE FOLDERS MODAL
-       ============================================================ */
-    .modal-backdrop {
-      position: fixed; inset: 0;
-      background: var(--overlay);
-      z-index: 400;
-      display: flex; align-items: center; justify-content: center;
-      padding: 24px;
-      animation: fadeIn 0.25s var(--ease);
-    }
-    .modal-backdrop.hidden { display: none; }
-
-    .modal {
-      background: var(--card-bg);
-      border: 1px solid var(--rule);
-      border-radius: 6px;
-      width: 100%;
-      max-width: 460px;
-      padding: 32px;
-      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
-    }
-
-    .modal-title {
-      font-family: var(--font-display);
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      margin-bottom: 6px;
-    }
-    .modal-sub { font-size: 13px; color: var(--ink-2); margin-bottom: 24px; }
-
-    .folder-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
-
-    .folder-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px;
-      background: var(--bg-2);
-      border: 1px solid var(--rule);
-      border-radius: var(--radius);
-    }
-    .folder-row .folder-icon { font-size: 18px; flex-shrink: 0; }
-    .folder-row .folder-name {
-      flex: 1;
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--ink);
-    }
-    .folder-row .folder-count { font-size: 12px; color: var(--ink-2); }
-    .folder-delete-btn {
-      width: 28px; height: 28px;
-      border: 1px solid var(--rule);
-      background: transparent;
-      border-radius: 50%;
-      color: var(--ink-2);
-      font-size: 12px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-      flex-shrink: 0;
-    }
-    .folder-delete-btn:hover { background: rgba(192,57,43,0.1); color: #c0392b; border-color: rgba(192,57,43,0.3); }
-
-    /* Add folder input row */
-    .add-folder-row {
-      display: flex; gap: 8px;
-      margin-bottom: 20px;
-    }
-    .add-folder-input {
-      flex: 1;
-      background: var(--bg);
-      border: 1px solid var(--rule);
-      color: var(--ink);
-      font-family: var(--font-display);
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.06em;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      outline: none;
-      transition: border-color 0.2s;
-    }
-    .add-folder-input:focus { border-color: var(--accent); }
-    .add-folder-input::placeholder { color: var(--ink-2); opacity: 0.6; }
-
-    .icon-select {
-      background: var(--bg);
-      border: 1px solid var(--rule);
-      color: var(--ink);
-      font-size: 18px;
-      padding: 8px 10px;
-      border-radius: var(--radius);
-      cursor: pointer;
-      width: 50px;
-      text-align: center;
-    }
-
-    .modal-actions {
-      display: flex; justify-content: flex-end; gap: 8px; padding-top: 16px;
-      border-top: 1px solid var(--rule);
-    }
-
-    /* ============================================================
+    /* ═══════════════════════════════════════════════════════
        LIGHTBOX
-       ============================================================ */
-    #lightbox {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.97);
-      z-index: 500;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-    #lightbox.open { display: flex; animation: fadeIn 0.25s var(--ease); }
+       ═══════════════════════════════════════════════════════ */
+    #lightbox { position:fixed; inset:0; background:rgba(0,0,0,0.97); z-index:500; display:none; flex-direction:column; align-items:center; justify-content:center; }
+    #lightbox.open { display:flex; animation:fadein 0.25s var(--ease); }
+    .lb-wrap { flex:1; display:flex; align-items:center; justify-content:center; padding:60px 80px 40px; width:100%; position:relative; }
+    .lb-wrap::after { content:''; position:absolute; inset:0; z-index:1; } /* right-click shield */
+    #lb-img { max-width:100%; max-height:calc(100dvh - 140px); object-fit:contain; border-radius:2px; position:relative; z-index:0; -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
+    .lb-close { position:absolute; top:20px; right:24px; width:42px; height:42px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); border-radius:50%; color:#fff; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s; z-index:10; }
+    .lb-close:hover { background:var(--accent); border-color:var(--accent); }
+    .lb-nav { position:absolute; top:50%; transform:translateY(-50%); width:48px; height:48px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.12); border-radius:50%; color:#fff; font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.15s; z-index:10; }
+    .lb-nav:hover { background:rgba(255,255,255,0.18); }
+    .lb-prev { left:20px; }
+    .lb-next { right:20px; }
+    .lb-footer { padding:16px 24px; display:flex; align-items:center; justify-content:center; gap:20px; width:100%; }
+    .lb-counter { font-family:var(--fd); font-size:12px; font-weight:600; letter-spacing:0.18em; color:rgba(255,255,255,0.4); }
 
-    .lb-img-wrap {
-      flex: 1;
-      display: flex; align-items: center; justify-content: center;
-      padding: 60px 80px 40px;
-      width: 100%;
-    }
+    /* ═══════════════════════════════════════════════════════
+       MANAGE FOLDERS MODAL
+       ═══════════════════════════════════════════════════════ */
+    .modal-bg { position:fixed; inset:0; background:var(--overlay); z-index:400; display:flex; align-items:center; justify-content:center; padding:24px; }
+    .modal-bg.hidden { display:none; }
+    .modal { background:var(--card); border:1px solid var(--rule); border-radius:6px; width:100%; max-width:460px; padding:32px; box-shadow:0 24px 80px rgba(0,0,0,0.4); }
+    .modal h2 { font-family:var(--fd); font-size:22px; font-weight:700; letter-spacing:0.04em; margin-bottom:6px; }
+    .modal-sub { font-size:13px; color:var(--ink2); margin-bottom:24px; }
+    .folder-list { display:flex; flex-direction:column; gap:8px; margin-bottom:20px; }
+    .folder-row { display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg2); border:1px solid var(--rule); border-radius:2px; }
+    .folder-row .fi { font-size:18px; flex-shrink:0; }
+    .folder-row .fn { flex:1; font-family:var(--fd); font-size:14px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; color:var(--ink); }
+    .folder-row .fc { font-size:12px; color:var(--ink2); }
+    .folder-del { width:28px; height:28px; border:1px solid var(--rule); background:transparent; border-radius:50%; color:var(--ink2); font-size:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background 0.15s, color 0.15s; }
+    .folder-del:hover { background:rgba(192,57,43,0.1); color:#c0392b; }
+    .add-row { display:flex; gap:8px; margin-bottom:20px; }
+    .add-input { flex:1; background:var(--bg); border:1px solid var(--rule); color:var(--ink); font-family:var(--fd); font-size:14px; padding:10px 14px; border-radius:2px; outline:none; transition:border-color 0.2s; }
+    .add-input:focus { border-color:var(--accent); }
+    .add-input::placeholder { color:var(--ink2); opacity:0.6; }
+    .icon-sel { background:var(--bg); border:1px solid var(--rule); color:var(--ink); font-size:18px; padding:8px 10px; border-radius:2px; cursor:pointer; width:50px; }
+    .modal-actions { display:flex; justify-content:flex-end; gap:8px; padding-top:16px; border-top:1px solid var(--rule); }
 
-    #lb-img {
-      max-width: 100%;
-      max-height: calc(100dvh - 140px);
-      object-fit: contain;
-      border-radius: var(--radius);
-      animation: lbSlide 0.3s var(--ease);
-    }
-    @keyframes lbSlide {
-      from { opacity: 0; transform: scale(0.95); }
-      to   { opacity: 1; transform: scale(1); }
-    }
-
-    .lb-close {
-      position: absolute; top: 20px; right: 24px;
-      width: 42px; height: 42px;
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 50%;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
-    }
-    .lb-close:hover { background: var(--accent); border-color: var(--accent); }
-
-    .lb-nav {
-      position: absolute;
-      top: 50%; transform: translateY(-50%);
-      width: 48px; height: 48px;
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 50%;
-      color: #fff;
-      font-size: 18px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: background 0.15s;
-    }
-    .lb-nav:hover { background: rgba(255,255,255,0.18); }
-    .lb-prev { left: 20px; }
-    .lb-next { right: 20px; }
-
-    .lb-footer {
-      padding: 16px 24px;
-      display: flex; align-items: center; justify-content: center; gap: 20px;
-      width: 100%;
-    }
-    .lb-counter {
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      color: rgba(255,255,255,0.4);
-    }
-    .lb-filename {
-      font-size: 12px;
-      color: rgba(255,255,255,0.25);
-      max-width: 300px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* ============================================================
+    /* ═══════════════════════════════════════════════════════
        CONTACT PAGE
-       ============================================================ */
-    .contact-layout {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      min-height: calc(100dvh - var(--nav-h));
-    }
-    .contact-left {
-      padding: 64px 48px 64px 40px;
-      border-right: 1px solid var(--rule);
-    }
-    .contact-right {
-      padding: 64px 40px 64px 48px;
-    }
+       ═══════════════════════════════════════════════════════ */
+    .contact-wrap { display:grid; grid-template-columns:1fr 1.2fr; min-height:calc(100dvh - var(--navh)); }
+    .contact-left  { padding:64px 48px 64px 40px; border-right:1px solid var(--rule); }
+    .contact-right { padding:64px 40px 64px 48px; }
+    .c-eyebrow { font-family:var(--fd); font-size:11px; font-weight:600; letter-spacing:0.2em; text-transform:uppercase; color:var(--accent); display:flex; align-items:center; gap:12px; margin-bottom:24px; }
+    .c-eyebrow::before { content:''; display:block; width:28px; height:1px; background:var(--accent); }
+    .c-title { font-family:var(--fd); font-size:clamp(44px,7vw,72px); font-weight:700; letter-spacing:0.02em; line-height:0.95; margin-bottom:24px; }
+    .c-title em { font-family:var(--fs); font-style:italic; font-weight:400; color:var(--ink2); font-size:0.85em; }
+    .c-desc { font-size:15px; color:var(--ink2); line-height:1.8; margin-bottom:48px; max-width:380px; }
+    .c-info-list { display:flex; flex-direction:column; }
+    .c-info-item { display:flex; align-items:flex-start; gap:14px; padding:18px 0; border-bottom:1px solid var(--rule); }
+    .c-info-item:first-child { border-top:1px solid var(--rule); }
+    .c-icon { width:34px; height:34px; background:var(--accentlite); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0; margin-top:2px; }
+    .c-lbl { font-family:var(--fd); font-size:10px; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink2); display:block; margin-bottom:3px; }
+    .c-val { font-size:15px; color:var(--ink); }
+    .form-title { font-family:var(--fd); font-size:16px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--rule); }
+    .form-row   { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+    .form-row.full { grid-template-columns:1fr; }
+    .form-group { display:flex; flex-direction:column; gap:7px; }
+    .form-lbl { font-family:var(--fd); font-size:10px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink2); }
+    .form-ctrl { background:var(--bg); border:1px solid var(--rule); color:var(--ink); font-family:var(--fb); font-weight:300; font-size:15px; padding:11px 14px; border-radius:2px; outline:none; transition:border-color 0.2s; width:100%; }
+    .form-ctrl:focus { border-color:var(--accent); }
+    .form-ctrl::placeholder { color:var(--ink2); opacity:0.5; }
+    textarea.form-ctrl { resize:vertical; min-height:110px; }
+    select.form-ctrl  { cursor:pointer; appearance:none; }
+    .form-submit { width:100%; padding:15px; background:var(--accent); color:#fff; border:none; font-family:var(--fd); font-size:12px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; cursor:pointer; border-radius:2px; margin-top:6px; transition:opacity 0.2s; }
+    .form-submit:hover { opacity:0.88; }
 
-    .contact-eyebrow {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      display: flex; align-items: center; gap: 12px;
-      margin-bottom: 24px;
-    }
-    .contact-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--accent); }
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer { border-top:1px solid var(--rule); padding:24px 40px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+    .footer-copy { font-size:12px; color:var(--ink2); }
+    .footer-links { display:flex; gap:20px; }
+    .footer-btn { font-family:var(--fd); font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink2); background:none; border:none; cursor:pointer; transition:color 0.2s; }
+    .footer-btn:hover { color:var(--accent); }
+    .footer-lnk { font-family:var(--fd); font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink2); transition:color 0.2s; }
+    .footer-lnk:hover { color:var(--accent); }
 
-    .contact-title {
-      font-family: var(--font-display);
-      font-size: clamp(44px, 7vw, 72px);
-      font-weight: 700;
-      letter-spacing: 0.02em;
-      line-height: 0.95;
-      margin-bottom: 24px;
-    }
-    .contact-title em {
-      font-family: var(--font-serif);
-      font-style: italic;
-      font-weight: 400;
-      color: var(--ink-2);
-      font-size: 0.85em;
-    }
+    /* ── TOAST ──────────────────────────────────────────────── */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--ink); color:var(--bg); padding:11px 22px; border-radius:40px; font-family:var(--fd); font-size:12px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; opacity:0; pointer-events:none; z-index:600; white-space:nowrap; transition:opacity 0.3s, transform 0.3s var(--ease); }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
-    .contact-desc { font-size: 15px; color: var(--ink-2); line-height: 1.8; margin-bottom: 48px; max-width: 380px; }
-
-    .contact-info-list { display: flex; flex-direction: column; gap: 0; }
-    .contact-info-item {
-      display: flex; align-items: flex-start; gap: 14px;
-      padding: 18px 0;
-      border-bottom: 1px solid var(--rule);
-    }
-    .contact-info-item:first-child { border-top: 1px solid var(--rule); }
-    .ci-icon {
-      width: 34px; height: 34px;
-      background: var(--accent-lite);
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .ci-label {
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-      display: block;
-      margin-bottom: 3px;
-    }
-    .ci-value { font-size: 15px; color: var(--ink); }
-
-    /* Contact form */
-    .form-section-title {
-      font-family: var(--font-display);
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid var(--rule);
-    }
-
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-    .form-row.full { grid-template-columns: 1fr; }
-    .form-group { display: flex; flex-direction: column; gap: 7px; }
-
-    .form-label {
-      font-family: var(--font-display);
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-    }
-
-    .form-control {
-      background: var(--bg);
-      border: 1px solid var(--rule);
-      color: var(--ink);
-      font-family: var(--font-body);
-      font-weight: 300;
-      font-size: 15px;
-      padding: 11px 14px;
-      border-radius: var(--radius);
-      outline: none;
-      transition: border-color 0.2s;
-      width: 100%;
-    }
-    .form-control:focus { border-color: var(--accent); }
-    .form-control::placeholder { color: var(--ink-2); opacity: 0.5; }
-    textarea.form-control { resize: vertical; min-height: 110px; }
-    select.form-control { cursor: pointer; appearance: none; }
-
-    .form-submit {
-      width: 100%;
-      padding: 15px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-radius: var(--radius);
-      margin-top: 6px;
-      transition: opacity 0.2s;
-    }
-    .form-submit:hover { opacity: 0.88; }
-
-    /* ============================================================
-       FOOTER
-       ============================================================ */
-    footer {
-      border-top: 1px solid var(--rule);
-      padding: 24px 40px;
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 12px;
-    }
-    .footer-copy {
-      font-size: 12px;
-      color: var(--ink-2);
-      letter-spacing: 0.04em;
-    }
-    .footer-links { display: flex; gap: 20px; }
-    .footer-link {
-      font-family: var(--font-display);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--ink-2);
-      background: none; border: none;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .footer-link:hover { color: var(--accent); }
-
-    /* ============================================================
-       TOAST NOTIFICATION
-       ============================================================ */
-    #toast {
-      position: fixed;
-      bottom: 28px; left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--ink);
-      color: var(--white);
-      padding: 11px 22px;
-      border-radius: 40px;
-      font-family: var(--font-display);
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      opacity: 0;
-      pointer-events: none;
-      z-index: 600;
-      white-space: nowrap;
-      transition: opacity 0.3s, transform 0.3s var(--ease);
-    }
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* ============================================================
+    /* ═══════════════════════════════════════════════════════
        RESPONSIVE — MOBILE
-       ============================================================ */
+       ═══════════════════════════════════════════════════════ */
     @media (max-width: 768px) {
-      /* Hide desktop nav, show hamburger */
-      nav { display: none; }
-      .hamburger { display: flex; }
-
-      /* Header */
-      header { padding: 0 20px; }
-
-      /* Hero */
-      .hero { padding: 40px 24px 44px; }
-      .hero-scroll { display: none; }
-
-      /* About / Stats */
-      .about-strip { grid-template-columns: 1fr; }
-      .about-strip-left { border-right: none; border-bottom: 1px solid var(--rule); padding: 40px 24px; }
-      .about-strip-right { padding: 40px 24px; }
-
-      /* Gallery */
-      .gallery-header { padding: 32px 24px 24px; }
-      .admin-bar { padding: 10px 24px; }
-      .gallery-toolbar { padding: 12px 24px; }
-      .gallery-wrap { padding: 16px 24px 48px; }
-      .masonry-grid { columns: 2 !important; } /* force 2 cols on mobile */
-
-      /* Contact */
-      .contact-layout { grid-template-columns: 1fr; }
-      .contact-left { border-right: none; border-bottom: 1px solid var(--rule); padding: 40px 24px; }
-      .contact-right { padding: 40px 24px; }
-      .form-row { grid-template-columns: 1fr; }
-
-      /* Footer */
-      footer { padding: 20px 24px; flex-direction: column; align-items: flex-start; }
-
-      /* Lightbox nav */
-      .lb-prev { left: 8px; }
-      .lb-next { right: 8px; }
-      .lb-img-wrap { padding: 56px 52px 32px; }
+      nav, .nav-book { display:none; }
+      .hamburger { display:flex; }
+      header { padding:0 20px; }
+      .hero { padding:40px 24px 44px; }
+      .hero-scroll { display:none; }
+      .about-strip { grid-template-columns:1fr; }
+      .about-left  { border-right:none; border-bottom:1px solid var(--rule); padding:40px 24px; }
+      .about-right { padding:40px 24px; }
+      .sports-strip { grid-template-columns:1fr 1fr; }
+      .sport-btn:nth-child(2) { border-right:none; }
+      .sport-btn:nth-child(3) { border-top:1px solid var(--rule); }
+      .sport-btn:nth-child(4) { border-top:1px solid var(--rule); border-right:none; }
+      .sport-btn:nth-child(5) { border-top:1px solid var(--rule); grid-column:1/-1; border-right:none; }
+      .gal-header { padding:32px 24px 24px; }
+      .admin-bar  { padding:10px 24px; }
+      .gal-toolbar { padding:12px 24px; }
+      .gal-wrap   { padding:16px 24px 48px; }
+      .masonry    { columns:2 !important; }
+      .contact-wrap  { grid-template-columns:1fr; }
+      .contact-left  { border-right:none; border-bottom:1px solid var(--rule); padding:40px 24px; }
+      .contact-right { padding:40px 24px; }
+      .form-row   { grid-template-columns:1fr; }
+      footer { padding:20px 24px; flex-direction:column; align-items:flex-start; }
+      .lb-prev { left:8px; }
+      .lb-next { right:8px; }
+      .lb-wrap { padding:56px 52px 32px; }
     }
 
-    /* ============================================================
-       IMAGE PROTECTION
-       Disables right-click save, drag-to-desktop, and long-press
-       save on mobile. Not 100% foolproof but stops casual copying.
-       ============================================================ */
-
-    /* Prevent image drag */
-    img { -webkit-user-drag: none; user-drag: none; }
-
-    /* Disable text/image selection across the site */
-    .photo-card, .photo-card img, #lb-img {
-      -webkit-user-select: none;
-      user-select: none;
-      -webkit-touch-callout: none; /* disables iOS long-press save */
-    }
-
-    /* Transparent overlay over lightbox image blocks right-click saving */
-    .lb-img-wrap {
-      position: relative;
-    }
-    .lb-img-wrap::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      /* transparent shield — blocks right-click on the image */
-    }
-    #lb-img {
-      position: relative;
-      z-index: 0;
-    }
+    /* ── IMAGE PROTECTION ───────────────────────────────────── */
+    .photo-card, .photo-card img, #lb-img { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 
   </style>
 </head>
 <body>
 
-<!-- ── HIDDEN FILE INPUT ──────────────────────────────────────── -->
-<!--
-  This input is triggered by the "Add Photos" button.
-  It accepts multiple image files at once.
-  To change accepted types, edit the "accept" attribute.
--->
-<input type="file" id="file-input" accept="image/*" multiple>
+<!-- Toast -->
+<div id="toast" role="alert"></div>
 
-<!-- ── TOAST NOTIFICATION ────────────────────────────────────── -->
-<div id="toast" role="alert" aria-live="polite"></div>
-
-<!-- ── LIGHTBOX ───────────────────────────────────────────────── -->
-<!--
-  Full-screen image viewer. Opens when you click any photo.
-  Keyboard: ArrowLeft / ArrowRight to navigate, Escape to close.
--->
-<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo viewer">
-  <button class="lb-close" onclick="LB.close()" title="Close (Esc)">✕</button>
-  <button class="lb-nav lb-prev" onclick="LB.nav(-1)" title="Previous (←)">&#8592;</button>
-  <div class="lb-img-wrap">
-    <img id="lb-img" src="" alt="Gallery photo">
-  </div>
-  <button class="lb-nav lb-next" onclick="LB.nav(1)" title="Next (→)">&#8594;</button>
-  <div class="lb-footer">
-    <span class="lb-counter" id="lb-counter"></span>
-    <span class="lb-filename" id="lb-filename"></span>
-  </div>
+<!-- Lightbox -->
+<div id="lightbox">
+  <button class="lb-close" onclick="LB.close()">✕</button>
+  <button class="lb-nav lb-prev" onclick="LB.nav(-1)">&#8592;</button>
+  <div class="lb-wrap"><img id="lb-img" src="" alt="Zephera Photography"></div>
+  <button class="lb-nav lb-next" onclick="LB.nav(1)">&#8594;</button>
+  <div class="lb-footer"><span class="lb-counter" id="lb-counter"></span></div>
 </div>
 
-<!-- ── MANAGE FOLDERS MODAL ──────────────────────────────────── -->
-<!--
-  Opens from Portfolio > Manage Folders.
-  Lets you add new sport/category folders and delete existing ones.
--->
-<div class="modal-backdrop hidden" id="modal-backdrop" onclick="closeModal(event)">
-  <div class="modal" role="dialog" aria-modal="true">
-    <h2 class="modal-title">Manage Folders</h2>
-    <p class="modal-sub">Add new sport categories or remove existing ones.</p>
-
-    <!-- Existing folders list (populated by JS) -->
-    <div class="folder-list" id="modal-folder-list"></div>
-
-    <!-- Add new folder -->
-    <div class="add-folder-row">
-      <select class="icon-select" id="new-folder-icon" title="Pick an icon">
-        <option value="🏀">🏀</option>
-        <option value="🏐">🏐</option>
-        <option value="🥎">🥎</option>
-        <option value="⚾">⚾</option>
-        <option value="🏃">🏃</option>
-        <option value="⚽">⚽</option>
-        <option value="🏈">🏈</option>
-        <option value="🎾">🎾</option>
-        <option value="🏊">🏊</option>
-        <option value="🤸">🤸</option>
-        <option value="🥊">🥊</option>
-        <option value="🏋️">🏋️</option>
-        <option value="📸">📸</option>
+<!-- Manage Folders Modal -->
+<div class="modal-bg hidden" id="modal-bg">
+  <div class="modal">
+    <h2>Manage Folders</h2>
+    <p class="modal-sub">Add or remove sport categories.</p>
+    <div class="folder-list" id="folder-list"></div>
+    <div class="add-row">
+      <select class="icon-sel" id="new-icon">
+        <option>🏀</option><option>🏐</option><option>🥎</option>
+        <option>⚾</option><option>🏃</option><option>⚽</option>
+        <option>🏈</option><option>🎾</option><option>🏊</option>
+        <option>🤸</option><option>🥊</option><option>📸</option>
       </select>
-      <input
-        class="add-folder-input" id="new-folder-name"
-        type="text" placeholder="New folder name (e.g. Tennis)"
-        maxlength="40"
-      >
+      <input class="add-input" id="new-name" type="text" placeholder="New folder name (e.g. Tennis)" maxlength="40">
     </div>
-
     <div class="modal-actions">
-      <button class="btn-sm btn-sm-ghost" onclick="closeModal()">Done</button>
-      <button class="btn-sm btn-sm-accent" onclick="addFolder()">+ Add Folder</button>
+      <button class="btn-sm btn-ghost" onclick="closeModal()">Done</button>
+      <button class="btn-sm btn-accent" onclick="addFolder()">+ Add Folder</button>
     </div>
   </div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      HEADER
-     ══════════════════════════════════════════════════════════════ -->
+     ══════════════════════════════════════════ -->
 <header>
-  <!--
-    EDIT: Change "ZEPHERA" to your studio/photographer name.
-    The dot after is a design accent — remove the <span> if you prefer.
-  -->
-  <div class="logo" onclick="showPage('home')">ZEPHERA<span class="logo-dot">.</span></div>
-
+  <!-- EDIT: change "ZEPHERA" to your name -->
+  <button class="logo" onclick="showPage('home')">ZEPHERA<span class="logo-dot">.</span></button>
   <div class="nav-spacer"></div>
-
-  <!-- Desktop Navigation -->
   <nav id="desktop-nav">
-    <button class="nav-link" id="nav-home" onclick="showPage('home')">Home</button>
-
-    <!-- Portfolio dropdown — sports links are injected here by JS -->
-    <div class="nav-dropdown" id="portfolio-dropdown">
-      <button
-        class="nav-link nav-dropdown-trigger"
-        id="nav-portfolio"
-        onclick="toggleDropdown(event)"
-        aria-haspopup="true"
-        aria-expanded="false"
-      >
+    <button class="nav-btn" id="nav-home"    onclick="showPage('home')">Home</button>
+    <div class="nav-dropdown" id="nav-dropdown">
+      <button class="nav-btn nav-dd-trigger" id="nav-portfolio" onclick="toggleDD(event)" aria-haspopup="true" aria-expanded="false">
         Portfolio
-        <!-- Caret icon -->
-        <svg class="caret" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+        <svg class="caret" viewBox="0 0 14 14" fill="none"><path d="M3 5L7 9L11 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       </button>
-      <!-- Dropdown panel (items injected by JS) -->
-      <div class="nav-dropdown-panel" id="dropdown-panel" role="menu"></div>
+      <div class="nav-dd-panel" id="dd-panel" role="menu"></div>
     </div>
-
-    <button class="nav-link" id="nav-contact" onclick="showPage('contact')">Contact</button>
+    <button class="nav-btn" id="nav-contact" onclick="showPage('contact')">Contact</button>
   </nav>
-
-  <!--
-    EDIT: Change "Book a Session" text or link it to an external booking URL
-    by replacing onclick="showPage('contact')" with onclick="window.open('YOUR_URL')"
-  -->
-  <button class="nav-contact-btn" onclick="showPage('contact')">Book a Session</button>
-
-  <!-- Hamburger (mobile only) -->
-  <button class="hamburger" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+  <!-- EDIT: change button text or link to external booking page -->
+  <button class="nav-book" onclick="showPage('contact')">Book a Session</button>
+  <button class="hamburger" id="hamburger" onclick="toggleMob()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 </header>
 
-<!-- Mobile Menu (injected by JS) -->
-<div class="mobile-menu" id="mobile-menu"></div>
+<!-- Mobile menu (built by JS) -->
+<div class="mob-menu" id="mob-menu"></div>
 
-<!-- ══════════════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      HOME PAGE
-     ══════════════════════════════════════════════════════════════ -->
+     ══════════════════════════════════════════ -->
 <div class="page active" id="page-home">
 
-  <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
-      <!--
-        EDIT: Change eyebrow text, hero title, and subtitle below.
-      -->
       <div class="hero-eyebrow">Sports Photography</div>
-      <h1 class="hero-title">
-        FREEZE<br>THE<br>
-        <em>perfect moment</em>
-      </h1>
-      <p class="hero-sub">
-        <!--
-          EDIT: Your photographer bio / tagline goes here.
-        -->
-        Professional sports photography capturing the raw intensity,
-        emotion, and beauty of athletic competition — from courtside
-        to the track.
-      </p>
+      <!-- EDIT: hero headline -->
+      <h1 class="hero-title">FREEZE<br>THE<br><em>perfect moment</em></h1>
+      <!-- EDIT: hero tagline -->
+      <p class="hero-sub">Professional sports photography capturing the raw intensity, emotion, and beauty of athletic competition — from courtside to the track.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="showPage('basketball')">View Portfolio</button>
         <button class="btn-outline" onclick="showPage('contact')">Book a Session</button>
@@ -1537,186 +522,118 @@
     <div class="hero-scroll">Scroll</div>
   </section>
 
-  <!-- About Strip -->
   <div class="about-strip">
-    <div class="about-strip-left">
-      <h2 class="about-strip-title">
-        CAPTURING<br><em>athletics</em><br>IN MOTION
-      </h2>
+    <div class="about-left">
+      <h2 class="about-title">CAPTURING<br><em>athletics</em><br>IN MOTION</h2>
     </div>
-    <div class="about-strip-right">
-      <!--
-        EDIT: Your about paragraph. Keep it 2–3 sentences.
-      -->
-      <p class="about-strip-text">
-        Every game tells a story. Every athlete has a moment
-        that defines them. My job is to be there when it happens —
-        freezing split-second action into images that last forever.
-        Available for tournaments, showcases, camps, and events
-        of all levels across the US.
-      </p>
+    <div class="about-right">
+      <!-- EDIT: your about paragraph -->
+      <p class="about-text">Every game tells a story. Every athlete has a moment that defines them. My job is to be there when it happens — freezing split-second action into images that last forever. Available for tournaments, showcases, camps, and events of all levels across the US.</p>
     </div>
   </div>
 
-  <!-- Sports Strip -->
-  <!--
-    EDIT: These are the 5 sport categories shown as a visual strip.
-    Update the label text to match your folder names if you rename them.
-    The strip is purely decorative / navigation — clicking goes to that sport page.
-  -->
+  <!-- Sports navigation strip -->
   <div class="sports-strip">
-    <button class="sport-strip-item" onclick="showPage('basketball')">
-      <span class="ssi-icon">🏀</span>
-      <span class="ssi-label">Basketball</span>
-      <span class="ssi-arrow">→</span>
+    <button class="sport-btn" onclick="showPage('basketball')">
+      <span class="sport-icon">🏀</span><span class="sport-label">Basketball</span><span class="sport-arrow">→</span>
     </button>
-    <button class="sport-strip-item" onclick="showPage('volleyball')">
-      <span class="ssi-icon">🏐</span>
-      <span class="ssi-label">Volleyball</span>
-      <span class="ssi-arrow">→</span>
+    <button class="sport-btn" onclick="showPage('volleyball')">
+      <span class="sport-icon">🏐</span><span class="sport-label">Volleyball</span><span class="sport-arrow">→</span>
     </button>
-    <button class="sport-strip-item" onclick="showPage('softball')">
-      <span class="ssi-icon">🥎</span>
-      <span class="ssi-label">Softball</span>
-      <span class="ssi-arrow">→</span>
+    <button class="sport-btn" onclick="showPage('softball')">
+      <span class="sport-icon">🥎</span><span class="sport-label">Softball</span><span class="sport-arrow">→</span>
     </button>
-    <button class="sport-strip-item" onclick="showPage('baseball')">
-      <span class="ssi-icon">⚾</span>
-      <span class="ssi-label">Baseball</span>
-      <span class="ssi-arrow">→</span>
+    <button class="sport-btn" onclick="showPage('baseball')">
+      <span class="sport-icon">⚾</span><span class="sport-label">Baseball</span><span class="sport-arrow">→</span>
     </button>
-    <button class="sport-strip-item" onclick="showPage('athletics')">
-      <span class="ssi-icon">🏃</span>
-      <span class="ssi-label">Athletics &amp; Showcases</span>
-      <span class="ssi-arrow">→</span>
+    <button class="sport-btn" onclick="showPage('athletics')">
+      <span class="sport-icon">🏃</span><span class="sport-label">Athletics &amp; Showcases</span><span class="sport-arrow">→</span>
     </button>
   </div>
 
-  <!-- Footer -->
   <footer>
-    <!--
-      EDIT: Update copyright year and name.
-    -->
     <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
     <div class="footer-links">
-      <button class="footer-link" onclick="showPage('home')">Home</button>
-      <button class="footer-link" onclick="showPage('contact')">Contact</button>
-      <!--
-        EDIT: Replace the href below with your actual Instagram profile URL
-        e.g. href="https://www.instagram.com/zepheraphotography"
-      -->
-      <a class="footer-link" href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">Instagram</a>
+      <button class="footer-btn" onclick="showPage('contact')">Contact</button>
+      <!-- EDIT: update Instagram URL — search "zephera_photography" -->
+      <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
     </div>
   </footer>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════
-     SPORT / GALLERY PAGES  (built dynamically by JS)
-     ══════════════════════════════════════════════════════════════ -->
+<!-- Sport gallery pages injected here by JS -->
 <div id="sport-pages"></div>
 
-<!-- ══════════════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      CONTACT PAGE
-     ══════════════════════════════════════════════════════════════ -->
+     ══════════════════════════════════════════ -->
 <div class="page" id="page-contact">
-  <div class="contact-layout">
-
-    <!-- Left: info -->
+  <div class="contact-wrap">
     <div class="contact-left">
-      <div class="contact-eyebrow">Get in Touch</div>
-      <h2 class="contact-title">
-        LET'S<br>WORK<br><em>together</em>
-      </h2>
-      <p class="contact-desc">
-        <!--
-          EDIT: Short pitch about your availability / what you offer.
-        -->
-        Whether it's a championship game, a local showcase, or an
-        athlete portrait session — let's capture moments that last.
-      </p>
+      <div class="c-eyebrow">Get in Touch</div>
+      <h2 class="c-title">LET'S<br>WORK<br><em>together</em></h2>
+      <p class="c-desc">Whether it's a championship game, a local showcase, or an athlete portrait session — let's capture moments that last.</p>
 
-      <!-- ── CONTACT DETAILS ── -->
-      <!--
-        EDIT: Replace the email, phone, and location below with your real info.
-      -->
-      <div class="contact-info-list">
-        <div class="contact-info-item">
-          <div class="ci-icon">✉</div>
+      <!-- CONTACT DETAILS — EDIT all values below -->
+      <div class="c-info-list">
+        <div class="c-info-item">
+          <div class="c-icon">✉</div>
           <div>
-            <span class="ci-label">Email</span>
-            <span class="ci-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c6aea3aaaaa986bca3b6aea3b4a7b6aea9b2a9a1b4a7b6aebfe8a5a9ab">[email&#160;protected]</a></span>
+            <span class="c-lbl">Email</span>
+            <!-- EDIT: your email -->
+            <span class="c-val">hello@zepheraphotography.com</span>
           </div>
         </div>
-        <div class="contact-info-item">
-          <div class="ci-icon">📞</div>
+        <div class="c-info-item">
+          <div class="c-icon">📞</div>
           <div>
-            <span class="ci-label">Phone</span>
-            <span class="ci-value">+1 (555) 000-0000</span>
+            <span class="c-lbl">Phone</span>
+            <!-- EDIT: your phone -->
+            <span class="c-val">+1 (555) 000-0000</span>
           </div>
         </div>
-        <div class="contact-info-item">
-          <div class="ci-icon">📍</div>
+        <div class="c-info-item">
+          <div class="c-icon">📍</div>
           <div>
-            <span class="ci-label">Location</span>
-            <span class="ci-value">United States — Available Nationwide</span>
+            <span class="c-lbl">Location</span>
+            <!-- EDIT: your city/state -->
+            <span class="c-val">United States — Available Nationwide</span>
           </div>
         </div>
-        <div class="contact-info-item">
-          <div class="ci-icon">📸</div>
+        <div class="c-info-item">
+          <div class="c-icon">📸</div>
           <div>
-            <span class="ci-label">Instagram</span>
-            <!--
-              EDIT: Replace with your actual Instagram URL and handle.
-            -->
-            <span class="ci-value"><a href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">@zepheraphotography</a></span>
+            <span class="c-lbl">Instagram</span>
+            <!-- EDIT: your Instagram -->
+            <span class="c-val">
+              <a href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">@zephera_photography</a>
+            </span>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Right: form -->
     <div class="contact-right">
-      <div class="form-section-title">Send a Message</div>
+      <div class="form-title">Send a Message</div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">First Name</label>
-          <input type="text" class="form-control" placeholder="Jane">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Last Name</label>
-          <input type="text" class="form-control" placeholder="Smith">
-        </div>
+        <div class="form-group"><label class="form-lbl">First Name</label><input type="text" class="form-ctrl" placeholder="Jane"></div>
+        <div class="form-group"><label class="form-lbl">Last Name</label><input type="text" class="form-ctrl" placeholder="Smith"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" class="form-control" placeholder="jane@example.com">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Phone</label>
-          <input type="tel" class="form-control" placeholder="+1 (555) 000-0000">
-        </div>
+        <div class="form-group"><label class="form-lbl">Email</label><input type="email" class="form-ctrl" placeholder="jane@example.com"></div>
+        <div class="form-group"><label class="form-lbl">Phone</label><input type="tel" class="form-ctrl" placeholder="+1 (555) 000-0000"></div>
       </div>
       <div class="form-row full">
         <div class="form-group">
-          <label class="form-label">Sport / Event Type</label>
-          <!-- Options are populated by JS so they match your folders -->
-          <select class="form-control" id="contact-sport-select">
-            <option value="">Select a sport...</option>
-          </select>
+          <label class="form-lbl">Sport / Event Type</label>
+          <select class="form-ctrl" id="sport-select"><option value="">Select a sport...</option></select>
         </div>
       </div>
       <div class="form-row full">
-        <div class="form-group">
-          <label class="form-label">Event Date (if known)</label>
-          <input type="date" class="form-control">
-        </div>
+        <div class="form-group"><label class="form-lbl">Event Date (if known)</label><input type="date" class="form-ctrl"></div>
       </div>
       <div class="form-row full">
-        <div class="form-group">
-          <label class="form-label">Message</label>
-          <textarea class="form-control" placeholder="Tell me about your event, team, location, and what you need..."></textarea>
-        </div>
+        <div class="form-group"><label class="form-lbl">Message</label><textarea class="form-ctrl" placeholder="Tell me about your event, team, location, and what you need..."></textarea></div>
       </div>
       <button class="form-submit" onclick="submitContact()">Send Message</button>
     </div>
@@ -1725,808 +642,532 @@
   <footer>
     <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
     <div class="footer-links">
-      <button class="footer-link" onclick="showPage('home')">Home</button>
-      <button class="footer-link" onclick="showPage('basketball')">Portfolio</button>
-      <!--
-        EDIT: Replace with your actual Instagram URL
-      -->
-      <a class="footer-link" href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">Instagram</a>
+      <button class="footer-btn" onclick="showPage('home')">Home</button>
+      <button class="footer-btn" onclick="showPage('basketball')">Portfolio</button>
+      <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
     </div>
   </footer>
 </div>
 
-
-<!-- ══════════════════════════════════════════════════════════════
+<!-- ══════════════════════════════════════════
      JAVASCRIPT
-     ══════════════════════════════════════════════════════════════ -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+     ══════════════════════════════════════════ -->
+<script>
 
-/* ============================================================
-   ── INITIAL SPORT DATA ──────────────────────────────────────
-   EDIT THIS ARRAY to change your default folders.
-
-   Each entry:
-     id:    unique slug (no spaces, lowercase) — used in URLs
-     label: display name shown in the nav and page title
-     icon:  emoji shown in the dropdown and folder manager
-
-   To add a sport: copy a line and change id, label, icon.
-   To remove a sport: delete that line.
-   ============================================================ */
-let sportsData = [
-  { id: 'basketball',    label: 'Basketball',             icon: '🏀' },
-  { id: 'volleyball',   label: 'Volleyball',              icon: '🏐' },
-  { id: 'softball',     label: 'Softball',                icon: '🥎' },
-  { id: 'baseball',     label: 'Baseball',                icon: '⚾' },
-  { id: 'athletics',    label: 'Athletics / Camps & Showcases', icon: '🏃' },
+/* ─────────────────────────────────────────────────────────────
+   SPORT DATA
+   EDIT: add/remove sports. Each needs: id, label, icon.
+   id = lowercase slug, no spaces (used internally)
+   ───────────────────────────────────────────────────────────── */
+let sports = [
+  { id:'basketball', label:'Basketball',                  icon:'🏀' },
+  { id:'volleyball', label:'Volleyball',                  icon:'🏐' },
+  { id:'softball',   label:'Softball',                    icon:'🥎' },
+  { id:'baseball',   label:'Baseball',                    icon:'⚾' },
+  { id:'athletics',  label:'Athletics / Camps & Showcases', icon:'🏃' },
 ];
 
-/* ── YOUR CLOUDFLARE R2 PUBLIC URL ──────────────────────────
-   EDIT: If you ever change your R2 bucket or URL, update this
-   one line and all photos across every gallery update instantly.
-   ─────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   R2 BUCKET URL
+   EDIT: paste your Cloudflare R2 public URL here.
+   ───────────────────────────────────────────────────────────── */
 const R2_URL = 'https://pub-69a427f09bfb4986a3f02bc906620467.r2.dev';
 
-/* ============================================================
-   ── PHOTO MANIFEST ───────────────────────────────────────────
-   THIS IS HOW YOU ADD / REMOVE PHOTOS.
+/* ─────────────────────────────────────────────────────────────
+   PHOTO MANIFEST
+   HOW TO ADD PHOTOS:
+     1. Upload photo to R2 → correct sport folder
+        e.g.  baseball/DSC_5774.jpg
+     2. Add filename to the array below
+     3. Save → git add . && git commit -m "Add photo" && git push
 
-   For each sport, list the filenames of images you have placed
-   in the matching folder inside your R2 bucket.
+   HOW TO REMOVE A PHOTO:
+     Delete the filename from the array, save, push.
 
-   ── TO ADD A PHOTO ──────────────────────────────────────────
-     1. Upload the photo to R2 inside the correct sport folder
-        e.g. baseball/pic2.jpg
-     2. Add the filename to the array below e.g. 'pic2.jpg'
-     3. Save index.html
-     4. Run:  git add . && git commit -m "Add photo" && git push
-     5. Done — live on your site within 60 seconds
-
-   ── TO REMOVE A PHOTO ───────────────────────────────────────
-     1. Delete the filename from the array below
-     2. Save, commit, push
-
-   ── TO REORDER PHOTOS ───────────────────────────────────────
-     Change the order of filenames in the array.
-     Top = first photo shown in the gallery.
-   ============================================================ */
-const photoManifest = {
-
+   HOW TO REORDER:
+     Change the order of filenames. Top = first shown.
+   ───────────────────────────────────────────────────────────── */
+const manifest = {
   basketball: [
-    /* Add basketball filenames here e.g: 'pic1.jpg', */
+    /* e.g. 'pic1.jpg', 'pic2.jpg', */
   ],
-
   volleyball: [
-    /* Add volleyball filenames here e.g: 'pic1.jpg', */
+    /* e.g. 'pic1.jpg', */
   ],
-
   softball: [
-    /* Add softball filenames here e.g: 'pic1.jpg', */
+    /* e.g. 'pic1.jpg', */
   ],
-
   baseball: [
     'DSC_5773.jpg',
-    /* Add more baseball filenames below e.g: 'pic2.jpg', */
   ],
-
   athletics: [
-    /* Add athletics filenames here e.g: 'pic1.jpg', */
+    /* e.g. 'pic1.jpg', */
   ],
-
 };
-/* ── END OF PHOTO MANIFEST ─────────────────────────────────── */
 
+/* ─────────────────────────────────────────────────────────────
+   INTERNAL STATE — do not edit below this line
+   ───────────────────────────────────────────────────────────── */
 
-/* ============================================================
-   IMAGE STORE — built from photoManifest above
-   Each image gets:
-     id:   unique key used for drag-reorder and lightbox
-     src:  path to the file in /images/SPORT/filename
-     name: filename (shown in lightbox footer)
-   ============================================================ */
-let imageStore = {};
-sportsData.forEach(s => {
-  const files = photoManifest[s.id] || [];
-  imageStore[s.id] = files.map((filename, i) => ({
+/* Build image store from manifest */
+let store = {};
+sports.forEach(s => {
+  store[s.id] = (manifest[s.id] || []).map((f, i) => ({
     id:   s.id + '_' + i,
-    src:  R2_URL + '/' + s.id + '/' + filename,
-    name: filename,
+    src:  R2_URL + '/' + s.id + '/' + f,
+    name: f,
   }));
 });
 
-/* ── Track which sport page is open ─── */
-let currentSportId = null;
+/* Is the site running locally (VS Code / localhost)? */
+const LOCAL = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
 
-/* ── Track pending upload target sport ─── */
-let uploadTargetSport = null;
+/* Currently open sport */
+let activeSport = null;
 
-/* ============================================================
+/* ─────────────────────────────────────────────────────────────
    PAGE NAVIGATION
-   ============================================================ */
-function showPage(pageId) {
-  /* If it's a sport page that hasn't been built yet, build it */
-  if (sportsData.find(s => s.id === pageId)) {
-    let page = document.getElementById('page-' + pageId);
-    if (!page) {
-      /* Build the missing page on demand */
-      const container = document.getElementById('sport-pages');
-      page = document.createElement('div');
-      page.className = 'page';
-      page.id = 'page-' + pageId;
-      container.appendChild(page);
+   ───────────────────────────────────────────────────────────── */
+function showPage(id) {
+  /* Build sport page if needed */
+  if (sports.find(s => s.id === id)) {
+    let pg = document.getElementById('page-' + id);
+    if (!pg) {
+      pg = document.createElement('div');
+      pg.className = 'page';
+      pg.id = 'page-' + id;
+      document.getElementById('sport-pages').appendChild(pg);
     }
-    /* Always re-render content so photo counts are fresh */
-    renderSportPageContent(pageId);
-    currentSportId = pageId;
+    buildSportPage(id);
+    activeSport = id;
+  } else {
+    activeSport = null;
   }
 
-  /* Hide all pages */
+  /* Hide all, show target */
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-
-  /* Show target page */
-  const target = document.getElementById('page-' + pageId);
-  if (!target) { console.warn('Page not found:', pageId); return; }
+  const target = document.getElementById('page-' + id);
+  if (!target) return;
   target.classList.add('active');
 
-  /* Update nav active states */
-  document.querySelectorAll('.nav-link, .mobile-nav-link').forEach(el => el.classList.remove('active'));
-  const navEl = document.getElementById('nav-' + pageId);
-  if (navEl) navEl.classList.add('active');
-  if (pageId === 'home') {
-    const homeNav = document.getElementById('nav-home');
-    if (homeNav) homeNav.classList.add('active');
-    currentSportId = null;
-  }
+  /* Nav highlights */
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const nb = document.getElementById('nav-' + id);
+  if (nb) nb.classList.add('active');
+  if (id === 'home')    document.getElementById('nav-home').classList.add('active');
+  if (sports.find(s => s.id === id)) document.getElementById('nav-portfolio').classList.add('active');
 
-  /* Portfolio nav stays highlighted when on a sport page */
-  if (sportsData.find(s => s.id === pageId)) {
-    const pNav = document.getElementById('nav-portfolio');
-    if (pNav) pNav.classList.add('active');
-  }
+  /* Close menus */
+  closeDD();
+  closeMob();
 
-  /* Close dropdowns and mobile menu */
-  closeDropdown();
-  closeMobileMenu();
+  /* Scroll top */
+  window.scrollTo({ top:0, behavior:'instant' });
 
-  /* Scroll to top */
-  window.scrollTo({ top: 0, behavior: 'instant' });
+  /* Drag-to-reorder: local only */
+  if (LOCAL && sports.find(s => s.id === id)) initDrag(id);
 
-  /* Reinitialise drag-to-reorder on sport pages — local only */
-  if (sportsData.find(s => s.id === pageId)) {
-    const isLocal = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-    if (isLocal) initDragToReorder(pageId);
-  }
-
-  /* Populate contact sport select with current folders */
-  populateContactSelect();
-
-  /* Refresh nav counts */
-  renderNav();
+  /* Sync contact select and nav */
+  syncSelect();
+  buildNav();
 }
 
-/* Navigate to first sport in list */
-function openFirstSport() {
-  if (sportsData.length > 0) showPage(sportsData[0].id);
-}
-
-/* ============================================================
-   DROPDOWN TOGGLE
-   ============================================================ */
-function toggleDropdown(e) {
-  /* Stop the click from bubbling to the document listener
-     which would immediately close the dropdown again */
-  if (e) e.stopPropagation();
-
-  const dd = document.getElementById('portfolio-dropdown');
+/* ─────────────────────────────────────────────────────────────
+   DROPDOWN
+   ───────────────────────────────────────────────────────────── */
+function toggleDD(e) {
+  e.stopPropagation(); /* prevents immediate close from document listener */
+  const dd = document.getElementById('nav-dropdown');
   const btn = document.getElementById('nav-portfolio');
-  const isOpen = dd.classList.contains('open');
-  if (isOpen) { closeDropdown(); }
-  else {
+  if (dd.classList.contains('open')) {
+    closeDD();
+  } else {
     dd.classList.add('open');
     btn.setAttribute('aria-expanded', 'true');
   }
 }
-
-function closeDropdown() {
-  const dd = document.getElementById('portfolio-dropdown');
+function closeDD() {
+  const dd  = document.getElementById('nav-dropdown');
   const btn = document.getElementById('nav-portfolio');
-  if (dd) { dd.classList.remove('open'); }
-  if (btn) { btn.setAttribute('aria-expanded', 'false'); }
+  if (dd)  dd.classList.remove('open');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
 }
-
-/* Close dropdown if clicking outside */
+/* Close when clicking anywhere outside the dropdown */
 document.addEventListener('click', e => {
-  const dd = document.getElementById('portfolio-dropdown');
-  if (dd && !dd.contains(e.target)) closeDropdown();
+  const dd = document.getElementById('nav-dropdown');
+  if (dd && !dd.contains(e.target)) closeDD();
 });
 
-/* ============================================================
-   MOBILE MENU TOGGLE
-   ============================================================ */
-function toggleMobileMenu() {
-  const menu = document.getElementById('mobile-menu');
-  const hb   = document.getElementById('hamburger');
-  const open = menu.classList.toggle('open');
+/* ─────────────────────────────────────────────────────────────
+   MOBILE MENU
+   ───────────────────────────────────────────────────────────── */
+function toggleMob() {
+  const m  = document.getElementById('mob-menu');
+  const hb = document.getElementById('hamburger');
+  const open = m.classList.toggle('open');
   hb.classList.toggle('open', open);
 }
-function closeMobileMenu() {
-  document.getElementById('mobile-menu').classList.remove('open');
+function closeMob() {
+  document.getElementById('mob-menu').classList.remove('open');
   document.getElementById('hamburger').classList.remove('open');
 }
 
-/* ============================================================
-   RENDER NAV (dropdown + mobile menu)
-   Called after any folder add/remove.
-   ============================================================ */
-function renderNav() {
+/* ─────────────────────────────────────────────────────────────
+   BUILD NAV DROPDOWN + MOBILE MENU
+   ───────────────────────────────────────────────────────────── */
+function buildNav() {
   /* Desktop dropdown */
-  const panel = document.getElementById('dropdown-panel');
+  const panel = document.getElementById('dd-panel');
   if (panel) {
-    panel.innerHTML = sportsData.map(s => `
-      <button
-        class="dropdown-item ${currentSportId === s.id ? 'active' : ''}"
-        onclick="showPage('${s.id}')"
-        role="menuitem"
-      >
-        <span class="di-icon">${s.icon}</span>
-        ${s.label}
-        <span class="di-count">${imageStore[s.id] ? imageStore[s.id].length : 0}</span>
-      </button>
-    `).join('') + `
-      <div class="dropdown-divider"></div>
-      <button class="dropdown-item dropdown-manage" onclick="openModal(); closeDropdown()">
-        ⚙ Manage Folders
-      </button>
-    `;
+    panel.innerHTML =
+      sports.map(s => `
+        <button class="dd-item ${activeSport===s.id?'active':''}" onclick="showPage('${s.id}')" role="menuitem">
+          <span class="dd-icon">${s.icon}</span>
+          ${s.label}
+          <span class="dd-count">${(store[s.id]||[]).length}</span>
+        </button>
+      `).join('') +
+      `<div class="dd-divider"></div>
+       <button class="dd-item dd-manage" onclick="openModal();closeDD()">⚙ Manage Folders</button>`;
   }
 
   /* Mobile menu */
-  const mobileMenu = document.getElementById('mobile-menu');
-  if (mobileMenu) {
-    mobileMenu.innerHTML = `
-      <button class="mobile-nav-link ${currentSportId === null ? 'active' : ''}" onclick="showPage('home')">🏠 Home</button>
-      <button class="mobile-nav-link" onclick="">📂 Portfolio</button>
-      <div class="mobile-sport-links">
-        ${sportsData.map(s => `
-          <button class="mobile-nav-link ${currentSportId === s.id ? 'active' : ''}" onclick="showPage('${s.id}')">
-            <span class="mdi">${s.icon}</span> ${s.label}
-          </button>
-        `).join('')}
-        <button class="mobile-nav-link" onclick="openModal(); closeMobileMenu()" style="color:var(--accent)">
-          ⚙ Manage Folders
-        </button>
-      </div>
-      <button class="mobile-nav-link" onclick="showPage('contact')">✉ Contact</button>
-    `;
+  const mob = document.getElementById('mob-menu');
+  if (mob) {
+    mob.innerHTML =
+      `<button class="mob-link" onclick="showPage('home')">🏠 Home</button>
+       <button class="mob-link" style="pointer-events:none;opacity:0.5">📂 Portfolio</button>
+       <div class="mob-sub">
+         ${sports.map(s=>`<button class="mob-link ${activeSport===s.id?'active':''}" onclick="showPage('${s.id}')">${s.icon} ${s.label}</button>`).join('')}
+         ${LOCAL ? `<button class="mob-link" onclick="openModal();closeMob()" style="color:var(--accent)">⚙ Manage Folders</button>` : ''}
+       </div>
+       <button class="mob-link" onclick="showPage('contact')">✉ Contact</button>`;
   }
 }
 
-/* ============================================================
-   RENDER SPORT PAGES
-   Builds and injects a page div for each sport in sportsData.
-   ============================================================ */
-function renderAllSportPages() {
-  const container = document.getElementById('sport-pages');
-
-  /* Remove old pages for deleted sports */
-  Array.from(container.children).forEach(child => {
-    const id = child.id.replace('page-', '');
-    if (!sportsData.find(s => s.id === id)) container.removeChild(child);
-  });
-
-  /* Add / refresh pages */
-  sportsData.forEach(sport => {
-    let page = document.getElementById('page-' + sport.id);
-    if (!page) {
-      page = document.createElement('div');
-      page.className = 'page';
-      page.id = 'page-' + sport.id;
-      container.appendChild(page);
-    }
-    renderSportPageContent(sport.id);
-  });
-}
-
-/* ============================================================
-   RENDER A SINGLE SPORT PAGE CONTENT
-   ============================================================ */
-function renderSportPageContent(sportId) {
-  const sport = sportsData.find(s => s.id === sportId);
+/* ─────────────────────────────────────────────────────────────
+   BUILD SPORT GALLERY PAGE
+   ───────────────────────────────────────────────────────────── */
+function buildSportPage(id) {
+  const sport = sports.find(s => s.id === id);
   if (!sport) return;
-  const page = document.getElementById('page-' + sportId);
+  const page = document.getElementById('page-' + id);
   if (!page) return;
-
-  /* Determine if running locally (VS Code / file://) or on live site */
-  const isLocalRender = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-
-  const imgs = imageStore[sportId] || [];
+  const imgs = store[id] || [];
 
   page.innerHTML = `
-    <!-- ── GALLERY HEADER ── -->
-    <div class="gallery-header">
-      <div class="gallery-title-block">
-        <button class="gallery-back" onclick="showPage('home')">← All Sports</button>
-        <h1 class="gallery-page-title">${sport.label.toUpperCase()}</h1>
+    <div class="gal-header">
+      <div class="gal-title-block">
+        <button class="gal-back" onclick="showPage('home')">← All Sports</button>
+        <h1 class="gal-title">${sport.label.toUpperCase()}</h1>
       </div>
-      <div class="gallery-header-right">
-        <div class="gallery-photo-count">
-          <span class="gc-num" id="count-${sportId}">${imgs.length}</span>
-          <span class="gc-label">Photos</span>
-        </div>
+      <div class="gal-count-wrap">
+        <span class="gal-count-num" id="cnt-${id}">${imgs.length}</span>
+        <span class="gal-count-lbl">Photos</span>
       </div>
     </div>
 
-    <!-- ── ADMIN BAR — only shown locally, never on live site ── -->
-    ${isLocalRender ? `
-    <div class="admin-bar" id="admin-bar-${sportId}">
-      <span class="admin-bar-label">📂 LOCAL EDIT MODE — ${sport.label}</span>
-      <span class="admin-bar-hint">Add filenames to photoManifest in index.html, then push to GitHub</span>
-      <button class="btn-sm btn-sm-ghost" onclick="renameFolder('${sportId}')">✏ Rename Folder</button>
+    ${LOCAL ? `
+    <div class="admin-bar">
+      <span class="admin-label">📂 LOCAL EDIT MODE — ${sport.label}</span>
+      <span class="admin-hint">Add filenames to the manifest in index.html → push to GitHub</span>
+      <button class="btn-sm btn-ghost" onclick="renameFolder('${id}')">✏ Rename</button>
     </div>` : ''}
 
-    <!-- ── GALLERY SECTION ── -->
-    <div class="gallery-wrap">
-
-      <!-- View toggle toolbar — column switcher only, no admin text -->
-      <div class="gallery-toolbar">
-        <div class="toolbar-left">
-          <!-- intentionally empty for visitors -->
-        </div>
-        <div class="view-toggle">
-          <button class="view-btn" title="1 column" onclick="setColumns(this, 1, '${sportId}')">
-            <svg width="14" height="14"><rect x="0" y="0" width="14" height="4" fill="currentColor"/><rect x="0" y="5" width="14" height="4" fill="currentColor"/><rect x="0" y="10" width="14" height="4" fill="currentColor"/></svg>
-          </button>
-          <button class="view-btn" title="2 columns" onclick="setColumns(this, 2, '${sportId}')">
-            <svg width="14" height="14"><rect x="0" y="0" width="6" height="6" fill="currentColor"/><rect x="8" y="0" width="6" height="6" fill="currentColor"/><rect x="0" y="8" width="6" height="6" fill="currentColor"/><rect x="8" y="8" width="6" height="6" fill="currentColor"/></svg>
-          </button>
-          <button class="view-btn" title="3 columns" onclick="setColumns(this, 3, '${sportId}')">
-            <svg width="14" height="14"><rect x="0" y="0" width="4" height="4" fill="currentColor"/><rect x="5" y="0" width="4" height="4" fill="currentColor"/><rect x="10" y="0" width="4" height="4" fill="currentColor"/><rect x="0" y="5" width="4" height="4" fill="currentColor"/><rect x="5" y="5" width="4" height="4" fill="currentColor"/><rect x="10" y="5" width="4" height="4" fill="currentColor"/></svg>
-          </button>
-          <button class="view-btn active" title="4 columns (default)" onclick="setColumns(this, 4, '${sportId}')">
-            <svg width="14" height="14"><rect x="0" y="0" width="2" height="6" fill="currentColor"/><rect x="4" y="0" width="2" height="6" fill="currentColor"/><rect x="8" y="0" width="2" height="6" fill="currentColor"/><rect x="12" y="0" width="2" height="6" fill="currentColor"/><rect x="0" y="8" width="2" height="6" fill="currentColor"/><rect x="4" y="8" width="2" height="6" fill="currentColor"/><rect x="8" y="8" width="2" height="6" fill="currentColor"/><rect x="12" y="8" width="2" height="6" fill="currentColor"/></svg>
-          </button>
-        </div>
+    <div class="gal-toolbar">
+      <div class="view-toggle">
+        <button class="view-btn"        title="1 col"  onclick="setCols(this,1,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="14" height="4" fill="currentColor"/><rect x="0" y="5" width="14" height="4" fill="currentColor"/><rect x="0" y="10" width="14" height="4" fill="currentColor"/></svg></button>
+        <button class="view-btn"        title="2 cols" onclick="setCols(this,2,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="6" height="6" fill="currentColor"/><rect x="8" y="0" width="6" height="6" fill="currentColor"/><rect x="0" y="8" width="6" height="6" fill="currentColor"/><rect x="8" y="8" width="6" height="6" fill="currentColor"/></svg></button>
+        <button class="view-btn"        title="3 cols" onclick="setCols(this,3,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="4" height="4" fill="currentColor"/><rect x="5" y="0" width="4" height="4" fill="currentColor"/><rect x="10" y="0" width="4" height="4" fill="currentColor"/><rect x="0" y="5" width="4" height="4" fill="currentColor"/><rect x="5" y="5" width="4" height="4" fill="currentColor"/><rect x="10" y="5" width="4" height="4" fill="currentColor"/></svg></button>
+        <button class="view-btn active" title="4 cols" onclick="setCols(this,4,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="2" height="6" fill="currentColor"/><rect x="4" y="0" width="2" height="6" fill="currentColor"/><rect x="8" y="0" width="2" height="6" fill="currentColor"/><rect x="12" y="0" width="2" height="6" fill="currentColor"/><rect x="0" y="8" width="2" height="6" fill="currentColor"/><rect x="4" y="8" width="2" height="6" fill="currentColor"/><rect x="8" y="8" width="2" height="6" fill="currentColor"/><rect x="12" y="8" width="2" height="6" fill="currentColor"/></svg></button>
       </div>
+    </div>
 
-      <!-- Masonry grid — photos injected here -->
-      <div class="masonry-grid" id="gallery-grid-${sportId}">
-        ${imgs.length === 0 ? renderEmptyState(sportId) : imgs.map((img, i) => renderPhotoCard(img, i, sportId, isLocalRender)).join('')}
+    <div class="gal-wrap">
+      <div class="masonry" id="grid-${id}">
+        ${imgs.length === 0 ? emptyState(sport) : imgs.map((img,i) => photoCard(img,i,id)).join('')}
       </div>
     </div>
 
     <footer>
       <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
       <div class="footer-links">
-        <button class="footer-link" onclick="showPage('home')">Home</button>
-        <button class="footer-link" onclick="showPage('contact')">Contact</button>
-        <a class="footer-link" href="https://www.instagram.com/zepheraphotography" target="_blank" rel="noopener">Instagram</a>
+        <button class="footer-btn" onclick="showPage('home')">Home</button>
+        <button class="footer-btn" onclick="showPage('contact')">Contact</button>
+        <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
       </div>
     </footer>
   `;
 
-  /* Attach drag-to-reorder on each photo card — local only */
-  const isLocalRender = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
-  if (isLocalRender) initDragToReorder(sportId);
+  if (LOCAL) initDrag(id);
 }
 
-/* ── Empty state HTML ── */
-function renderEmptyState(sportId) {
-  const sport = sportsData.find(s => s.id === sportId);
+/* Empty gallery state — visitor-friendly, no dev text */
+function emptyState(sport) {
   return `
     <div class="empty-state">
-      <div class="empty-state-icon">${sport ? sport.icon : '📸'}</div>
-      <div class="empty-state-title">Coming Soon</div>
-      <p class="empty-state-text">
-        Photos from ${sport ? sport.label : 'this gallery'} are on their way.<br>
-        Check back soon or get in touch to book a session.
-      </p>
+      <div class="empty-icon">${sport.icon}</div>
+      <div class="empty-title">Coming Soon</div>
+      <p class="empty-text">Photos from ${sport.label} are on their way.<br>Check back soon or get in touch to book a session.</p>
       <button class="btn-primary" onclick="showPage('contact')">Book a Session</button>
-    </div>
-  `;
+    </div>`;
 }
 
-/* ── Single photo card HTML ──
-   isLocal = true when editing in VS Code (localhost)
-   isLocal = false on the live site — no admin controls shown
-── */
-function renderPhotoCard(img, index, sportId, isLocal) {
+/* Single photo card — admin controls (delete, drag) only shown locally */
+function photoCard(img, index, sportId) {
   return `
-    <div
-      class="photo-card"
-      id="card-${img.id}"
-      ${isLocal ? 'draggable="true"' : ''}
-      data-id="${img.id}"
-      data-sport="${sportId}"
-      data-index="${index}"
-      oncontextmenu="return false"
-    >
-      <img
-        src="${img.src}"
-        alt="Zephera Photography"
-        loading="lazy"
-        draggable="false"
-        oncontextmenu="return false"
-        onclick="LB.open('${sportId}', ${index})"
-        style="pointer-events:all; cursor:zoom-in;"
-      >
-      <div class="photo-card-overlay">
-        ${isLocal ? `<span class="drag-handle" title="Drag to reorder">⠿</span>` : ''}
-        <div class="photo-card-actions">
-          <!-- View in lightbox — always shown -->
-          <button
-            class="photo-icon-btn"
-            title="View fullscreen"
-            onclick="LB.open('${sportId}', ${index})"
-          >⤢</button>
-          <!-- Delete — only shown locally -->
-          ${isLocal ? `
-          <button
-            class="photo-icon-btn delete"
-            title="Remove photo"
-            onclick="deletePhoto('${sportId}', '${img.id}')"
-          >✕</button>` : ''}
+    <div class="photo-card" id="card-${img.id}" ${LOCAL?'draggable="true"':''} data-id="${img.id}" data-sport="${sportId}" data-index="${index}" oncontextmenu="return false">
+      <img src="${img.src}" alt="Zephera Photography" loading="lazy" draggable="false" oncontextmenu="return false" onclick="LB.open('${sportId}',${index})">
+      <div class="card-overlay">
+        ${LOCAL ? `<span class="drag-handle" title="Drag to reorder">⠿</span>` : ''}
+        <div class="card-actions">
+          <button class="card-btn" title="View fullscreen" onclick="LB.open('${sportId}',${index})">⤢</button>
+          ${LOCAL ? `<button class="card-btn del" title="Remove" onclick="removePhoto('${sportId}','${img.id}')">✕</button>` : ''}
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
-/* ============================================================
-   VIEW COLUMNS
-   ============================================================ */
-function setColumns(btn, cols, sportId) {
-  /* Update button state */
-  const toolbar = btn.closest('.view-toggle');
-  if (toolbar) toolbar.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+/* ─────────────────────────────────────────────────────────────
+   COLUMN VIEW
+   ───────────────────────────────────────────────────────────── */
+function setCols(btn, n, id) {
+  btn.closest('.view-toggle').querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  const g = document.getElementById('grid-' + id);
+  if (!g) return;
+  g.className = 'masonry';
+  if (n !== 4) g.classList.add('c' + n);
+}
 
-  /* Update grid */
-  const grid = document.getElementById('gallery-grid-' + sportId);
+/* ─────────────────────────────────────────────────────────────
+   DRAG TO REORDER (local only)
+   ───────────────────────────────────────────────────────────── */
+function initDrag(id) {
+  const grid = document.getElementById('grid-' + id);
   if (!grid) return;
-  grid.className = 'masonry-grid';
-  if (cols !== 4) grid.classList.add('cols-' + cols);
-}
-
-/* ============================================================
-   DROP ZONE TOGGLE
-   ============================================================ */
-function toggleDropZone(sportId) {
-  const dz = document.getElementById('drop-zone-' + sportId);
-  if (dz) dz.classList.toggle('visible');
-}
-
-function setupDropZone(sportId) {
-  const dz = document.getElementById('drop-zone-' + sportId);
-  if (!dz) return;
-
-  dz.addEventListener('dragover', e => {
-    e.preventDefault();
-    dz.classList.add('active');
-  });
-  dz.addEventListener('dragleave', () => dz.classList.remove('active'));
-  dz.addEventListener('drop', e => {
-    e.preventDefault();
-    dz.classList.remove('active');
-    const files = [...e.dataTransfer.files].filter(f => f.type.startsWith('image/'));
-    if (files.length) handleImageFiles(files, sportId);
-    else showToast('Please drop image files only.');
-  });
-}
-
-/* ============================================================
-   DELETE PHOTO  (removes from imageStore and re-renders)
-   Note: this only removes it from the current session view.
-   To permanently remove, delete from photoManifest in index.html.
-   ============================================================ */
-function deletePhoto(sportId, imgId) {
-  if (!confirm('Remove this photo from the gallery?')) return;
-  imageStore[sportId] = (imageStore[sportId] || []).filter(i => i.id !== imgId);
-  renderSportPageContent(sportId);
-  initDragToReorder(sportId);
-  updateDropdownCounts();
-  showToast('Photo removed.');
-}
-
-/* ============================================================
-   DRAG-TO-REORDER PHOTOS
-   Uses the HTML5 Drag & Drop API.
-   ============================================================ */
-function initDragToReorder(sportId) {
-  const grid = document.getElementById('gallery-grid-' + sportId);
-  if (!grid) return;
-
-  let dragSrcId = null;
-
+  let src = null;
   grid.querySelectorAll('.photo-card').forEach(card => {
-    card.addEventListener('dragstart', e => {
-      dragSrcId = card.dataset.id;
-      card.classList.add('dragging');
-      e.dataTransfer.effectAllowed = 'move';
-    });
-
-    card.addEventListener('dragend', () => {
-      card.classList.remove('dragging');
-      grid.querySelectorAll('.photo-card').forEach(c => c.classList.remove('drag-over'));
-    });
-
-    card.addEventListener('dragover', e => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-      card.classList.add('drag-over');
-    });
-
-    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
-
+    card.addEventListener('dragstart', e => { src = card.dataset.id; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+    card.addEventListener('dragend',   ()  => { card.classList.remove('dragging'); grid.querySelectorAll('.photo-card').forEach(c => c.classList.remove('drag-over')); });
+    card.addEventListener('dragover',  e   => { e.preventDefault(); card.classList.add('drag-over'); });
+    card.addEventListener('dragleave', ()  => card.classList.remove('drag-over'));
     card.addEventListener('drop', e => {
-      e.preventDefault();
-      card.classList.remove('drag-over');
-      if (dragSrcId === card.dataset.id) return; /* same card */
-
-      /* Reorder imageStore array */
-      const imgs = imageStore[sportId];
-      const fromIdx = imgs.findIndex(i => i.id === dragSrcId);
-      const toIdx   = imgs.findIndex(i => i.id === card.dataset.id);
-      if (fromIdx < 0 || toIdx < 0) return;
-
-      /* Splice to move */
-      const [moved] = imgs.splice(fromIdx, 1);
-      imgs.splice(toIdx, 0, moved);
-
-      /* Re-render */
-      renderSportPageContent(sportId);
-      initDragToReorder(sportId);
-      showToast('Photo order updated.');
+      e.preventDefault(); card.classList.remove('drag-over');
+      if (src === card.dataset.id) return;
+      const arr = store[id];
+      const fi = arr.findIndex(i => i.id === src);
+      const ti = arr.findIndex(i => i.id === card.dataset.id);
+      if (fi < 0 || ti < 0) return;
+      const [m] = arr.splice(fi, 1);
+      arr.splice(ti, 0, m);
+      buildSportPage(id);
+      initDrag(id);
+      toast('Order updated.');
     });
   });
 }
 
-/* ============================================================
-   LIGHTBOX
-   ============================================================ */
-const LB = (() => {
-  let sportId = null;
-  let index   = 0;
+/* ─────────────────────────────────────────────────────────────
+   REMOVE PHOTO (local only — does not permanently delete)
+   ───────────────────────────────────────────────────────────── */
+function removePhoto(id, imgId) {
+  if (!confirm('Remove this photo from view?')) return;
+  store[id] = store[id].filter(i => i.id !== imgId);
+  buildSportPage(id);
+  if (LOCAL) initDrag(id);
+  buildNav();
+  toast('Photo removed from view. Remove it from the manifest to make permanent.');
+}
 
-  function open(sid, idx) {
-    sportId = sid;
-    index   = idx;
-    update();
+/* ─────────────────────────────────────────────────────────────
+   LIGHTBOX
+   ───────────────────────────────────────────────────────────── */
+const LB = (() => {
+  let sid = null, idx = 0;
+  function open(id, i) {
+    sid = id; idx = i; render();
     document.getElementById('lightbox').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
-
   function close() {
     document.getElementById('lightbox').classList.remove('open');
     document.body.style.overflow = '';
   }
-
-  function nav(dir) {
-    const imgs = imageStore[sportId] || [];
-    index = (index + dir + imgs.length) % imgs.length;
-    update();
+  function nav(d) {
+    const a = store[sid] || [];
+    idx = (idx + d + a.length) % a.length;
+    render();
   }
-
-  function update() {
-    const imgs = imageStore[sportId] || [];
-    if (!imgs.length) { close(); return; }
-    const img = imgs[index];
+  function render() {
+    const a = store[sid] || [];
+    if (!a.length) { close(); return; }
+    const img = a[idx];
     const el  = document.getElementById('lb-img');
     el.style.opacity = '0';
-    setTimeout(() => {
-      el.src = img.src;
-      el.alt = img.name;
-      el.style.opacity = '1';
-      el.style.transition = 'opacity 0.2s';
-    }, 80);
-    document.getElementById('lb-counter').textContent = (index + 1) + ' / ' + imgs.length;
-    document.getElementById('lb-filename').textContent = img.name;
+    setTimeout(() => { el.src = img.src; el.style.opacity='1'; el.style.transition='opacity 0.2s'; }, 80);
+    document.getElementById('lb-counter').textContent = (idx+1) + ' / ' + a.length;
   }
-
   return { open, close, nav };
 })();
 
-/* Lightbox backdrop click to close */
+/* Close lightbox on backdrop click */
 document.getElementById('lightbox').addEventListener('click', e => {
-  if (e.target === document.getElementById('lightbox') ||
-      e.target === document.getElementById('lb-img').parentElement) {
-    LB.close();
-  }
+  if (e.target.id === 'lightbox') LB.close();
 });
 
-/* Keyboard navigation */
+/* Keyboard nav */
 document.addEventListener('keydown', e => {
   if (!document.getElementById('lightbox').classList.contains('open')) return;
-  if (e.key === 'Escape')      LB.close();
-  if (e.key === 'ArrowLeft')   LB.nav(-1);
-  if (e.key === 'ArrowRight')  LB.nav(1);
+  if (e.key === 'Escape')     LB.close();
+  if (e.key === 'ArrowLeft')  LB.nav(-1);
+  if (e.key === 'ArrowRight') LB.nav(1);
 });
 
-/* ============================================================
+/* ─────────────────────────────────────────────────────────────
    MANAGE FOLDERS MODAL
-   ============================================================ */
+   ───────────────────────────────────────────────────────────── */
 function openModal() {
-  renderModalFolderList();
-  document.getElementById('modal-backdrop').classList.remove('hidden');
+  buildFolderList();
+  document.getElementById('modal-bg').classList.remove('hidden');
 }
-
 function closeModal(e) {
-  /* Close if clicking backdrop or Done button */
-  if (!e || e.target === document.getElementById('modal-backdrop')) {
-    document.getElementById('modal-backdrop').classList.add('hidden');
-    /* Refresh everything */
-    renderAllSportPages();
-    renderNav();
-    updateDropdownCounts();
-    populateContactSelect();
-  }
+  if (e && e.target !== document.getElementById('modal-bg') && e.type !== 'click') return;
+  document.getElementById('modal-bg').classList.add('hidden');
+  buildAllSportPages();
+  buildNav();
+  syncSelect();
 }
+/* Allow clicking directly on the btn too */
+document.getElementById('modal-bg').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-bg')) closeModal(e);
+});
 
-function renderModalFolderList() {
-  const list = document.getElementById('modal-folder-list');
-  list.innerHTML = sportsData.map(s => `
+function buildFolderList() {
+  document.getElementById('folder-list').innerHTML = sports.map(s => `
     <div class="folder-row">
-      <span class="folder-icon">${s.icon}</span>
-      <span class="folder-name">${s.label}</span>
-      <span class="folder-count">${(imageStore[s.id] || []).length} photos</span>
-      <button
-        class="folder-delete-btn"
-        title="Delete folder"
-        onclick="deleteFolder('${s.id}')"
-      >✕</button>
-    </div>
-  `).join('') || '<p style="color:var(--ink-2);font-size:13px">No folders yet. Add one below.</p>';
+      <span class="fi">${s.icon}</span>
+      <span class="fn">${s.label}</span>
+      <span class="fc">${(store[s.id]||[]).length} photos</span>
+      <button class="folder-del" onclick="deleteFolder('${s.id}')">✕</button>
+    </div>`).join('') || `<p style="color:var(--ink2);font-size:13px">No folders. Add one below.</p>`;
 }
 
 function addFolder() {
-  const nameInput = document.getElementById('new-folder-name');
-  const iconInput = document.getElementById('new-folder-icon');
-  const name = nameInput.value.trim();
-  if (!name) { showToast('Enter a folder name first.'); return; }
-
-  /* Generate slug from name */
-  const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-  if (sportsData.find(s => s.id === id)) { showToast('A folder with that name already exists.'); return; }
-
-  /* Add to data */
-  sportsData.push({ id, label: name, icon: iconInput.value });
-  imageStore[id] = [];
-
-  /* Reset input */
-  nameInput.value = '';
-
-  /* Refresh modal list */
-  renderModalFolderList();
-  showToast('Folder "' + name + '" added.');
+  const n = document.getElementById('new-name').value.trim();
+  const ic = document.getElementById('new-icon').value;
+  if (!n) { toast('Enter a folder name.'); return; }
+  const id = n.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+  if (sports.find(s => s.id === id)) { toast('Folder already exists.'); return; }
+  sports.push({ id, label:n, icon:ic });
+  store[id] = [];
+  document.getElementById('new-name').value = '';
+  buildFolderList();
+  toast('"' + n + '" added.');
 }
 
-function deleteFolder(sportId) {
-  const sport = sportsData.find(s => s.id === sportId);
-  if (!sport) return;
-  const photoCount = (imageStore[sportId] || []).length;
-  const msg = photoCount > 0
-    ? `Delete "${sport.label}" and all ${photoCount} photo${photoCount > 1 ? 's' : ''} in it?`
-    : `Delete the "${sport.label}" folder?`;
-  if (!confirm(msg)) return;
-
-  sportsData = sportsData.filter(s => s.id !== sportId);
-  delete imageStore[sportId];
-
-  /* If we're on this sport's page, go home */
-  if (currentSportId === sportId) {
-    currentSportId = null;
-    showPage('home');
-  }
-
-  renderModalFolderList();
-  renderAllSportPages();
-  renderNav();
-  showToast('Folder deleted.');
+function deleteFolder(id) {
+  const s = sports.find(x => x.id === id);
+  if (!s) return;
+  const n = (store[id]||[]).length;
+  if (!confirm(`Delete "${s.label}"${n ? ` and ${n} photo${n>1?'s':''}` : ''}?`)) return;
+  sports = sports.filter(x => x.id !== id);
+  delete store[id];
+  if (activeSport === id) { activeSport = null; showPage('home'); }
+  buildFolderList();
+  buildAllSportPages();
+  buildNav();
+  toast('Folder deleted.');
 }
 
-/* ============================================================
-   RENAME FOLDER
-   ============================================================ */
-function renameFolder(sportId) {
-  const sport = sportsData.find(s => s.id === sportId);
-  if (!sport) return;
-  const newName = prompt('Rename "' + sport.label + '" to:', sport.label);
-  if (!newName || !newName.trim() || newName.trim() === sport.label) return;
-  sport.label = newName.trim();
-  renderSportPageContent(sportId);
-  renderNav();
-  populateContactSelect();
-  showToast('Folder renamed to "' + sport.label + '".');
+function renameFolder(id) {
+  const s = sports.find(x => x.id === id);
+  if (!s) return;
+  const n = prompt('Rename to:', s.label);
+  if (!n || !n.trim() || n.trim() === s.label) return;
+  s.label = n.trim();
+  buildSportPage(id);
+  buildNav();
+  syncSelect();
+  toast('Renamed to "' + s.label + '".');
 }
 
-/* ============================================================
-   UPDATE DROPDOWN PHOTO COUNTS
-   ============================================================ */
-function updateDropdownCounts() {
-  sportsData.forEach(s => {
-    /* Dropdown badge */
-    const panel = document.getElementById('dropdown-panel');
-    if (panel) {
-      const btns = panel.querySelectorAll('.dropdown-item');
-      btns.forEach(btn => {
-        if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(s.id)) {
-          const badge = btn.querySelector('.di-count');
-          if (badge) badge.textContent = (imageStore[s.id] || []).length;
-        }
-      });
-    }
-    /* Gallery header count */
-    const countEl = document.getElementById('count-' + s.id);
-    if (countEl) countEl.textContent = (imageStore[s.id] || []).length;
-  });
-}
-
-/* ============================================================
-   CONTACT FORM — SPORT SELECT POPULATION
-   ============================================================ */
-function populateContactSelect() {
-  const sel = document.getElementById('contact-sport-select');
+/* ─────────────────────────────────────────────────────────────
+   CONTACT FORM SELECT SYNC
+   ───────────────────────────────────────────────────────────── */
+function syncSelect() {
+  const sel = document.getElementById('sport-select');
   if (!sel) return;
-  const current = sel.value;
+  const cur = sel.value;
   sel.innerHTML = '<option value="">Select a sport...</option>' +
-    sportsData.map(s => `<option value="${s.id}" ${s.id === current ? 'selected' : ''}>${s.label}</option>`).join('') +
+    sports.map(s => `<option value="${s.id}"${s.id===cur?' selected':''}>${s.label}</option>`).join('') +
     '<option value="other">Other</option>';
 }
 
 function submitContact() {
-  /* In production: replace this with a fetch() to your form handler or Formspree URL */
-  showToast('Message sent! I\'ll be in touch within 24 hours.');
+  toast("Message sent! I'll be in touch within 24 hours.");
 }
 
-/* ============================================================
-   TOAST NOTIFICATION
-   ============================================================ */
-let toastTimer = null;
-function showToast(msg) {
+/* ─────────────────────────────────────────────────────────────
+   BUILD ALL SPORT PAGES
+   ───────────────────────────────────────────────────────────── */
+function buildAllSportPages() {
+  const container = document.getElementById('sport-pages');
+  /* Remove pages for deleted sports */
+  Array.from(container.children).forEach(c => {
+    if (!sports.find(s => s.id === c.id.replace('page-',''))) container.removeChild(c);
+  });
+  /* Build / refresh all */
+  sports.forEach(s => {
+    let pg = document.getElementById('page-' + s.id);
+    if (!pg) {
+      pg = document.createElement('div');
+      pg.className = 'page';
+      pg.id = 'page-' + s.id;
+      container.appendChild(pg);
+    }
+    buildSportPage(s.id);
+  });
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TOAST
+   ───────────────────────────────────────────────────────────── */
+let toastT = null;
+function toast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg;
   t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  clearTimeout(toastT);
+  toastT = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-/* ==================================================
-   INITIALISE ON LOAD
-   ================================================== */
+/* ─────────────────────────────────────────────────────────────
+   IMAGE PROTECTION
+   Blocks right-click, drag-to-desktop, Cmd+S on images.
+   ───────────────────────────────────────────────────────────── */
+document.addEventListener('contextmenu', e => {
+  if (e.target.tagName === 'IMG' || e.target.closest('.photo-card') || e.target.closest('#lightbox')) {
+    e.preventDefault(); return false;
+  }
+});
+document.addEventListener('dragstart', e => {
+  if (e.target.tagName === 'IMG') { e.preventDefault(); return false; }
+});
+document.addEventListener('keydown', e => {
+  const mac = navigator.platform.toUpperCase().includes('MAC');
+  const mod = mac ? e.metaKey : e.ctrlKey;
+  if (mod && ['s','S','u','U'].includes(e.key)) { e.preventDefault(); return false; }
+});
+
+/* ─────────────────────────────────────────────────────────────
+   INIT
+   ───────────────────────────────────────────────────────────── */
 (function init() {
-  renderAllSportPages();
-  renderNav();
-  populateContactSelect();
+  buildAllSportPages();
+  buildNav();
+  syncSelect();
   showPage('home');
-
-  /* ── IMAGE PROTECTION ────────────────────────────────────────
-     Disables right-click context menu on all images globally.
-     Also blocks Ctrl+S / Cmd+S save shortcut and
-     Ctrl+U / Cmd+U view-source shortcut.
-     Note: determined users can still access images via dev tools —
-     this stops casual downloading only.
-  ──────────────────────────────────────────────────────────── */
-
-  /* Block right-click everywhere on the page */
-  document.addEventListener('contextmenu', e => {
-    if (e.target.tagName === 'IMG' || e.target.closest('.photo-card') || e.target.closest('#lightbox')) {
-      e.preventDefault();
-      return false;
-    }
-  });
-
-  /* Block Ctrl+S / Cmd+S (save page) and Ctrl+U (view source) */
-  document.addEventListener('keydown', e => {
-    const isMac = navigator.platform.toUpperCase().includes('MAC');
-    const ctrl  = isMac ? e.metaKey : e.ctrlKey;
-    if (ctrl && (e.key === 's' || e.key === 'S')) { e.preventDefault(); return false; }
-    if (ctrl && (e.key === 'u' || e.key === 'U')) { e.preventDefault(); return false; }
-  });
-
-  /* Block drag-to-desktop on all images */
-  document.addEventListener('dragstart', e => {
-    if (e.target.tagName === 'IMG') { e.preventDefault(); return false; }
-  });
-
 })();
 
 </script>
