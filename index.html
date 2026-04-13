@@ -433,6 +433,13 @@
       .lb-wrap { padding:56px 52px 32px; }
     }
 
+    /* ── FAQ (contact page right column) ──────────────────────── */
+    .c-faq { display:flex; flex-direction:column; }
+    .c-faq-item { padding:18px 0; border-bottom:1px solid var(--rule); }
+    .c-faq-item:first-child { border-top:1px solid var(--rule); }
+    .c-faq-q { display:block; font-family:var(--fd); font-size:14px; font-weight:600; letter-spacing:0.04em; color:var(--ink); margin-bottom:6px; }
+    .c-faq-a { display:block; font-size:14px; color:var(--ink2); line-height:1.7; }
+
     /* ── PORTFOLIO OVERVIEW PAGE ───────────────────────────────── */
     .portfolio-header {
       padding:56px 40px 40px;
@@ -570,7 +577,7 @@
     <button class="nav-btn" id="nav-contact" onclick="showPage('contact')">Contact</button>
   </nav>
   <!-- EDIT: change button text or link to external booking page -->
-  <button class="nav-book" onclick="showPage('contact')">Book a Session</button>
+  <button class="nav-book" onclick="showPage('book')">Book a Session</button>
   <button class="hamburger" id="hamburger" onclick="toggleMob()" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
@@ -593,7 +600,7 @@
       <p class="hero-sub">Professional sports photography capturing the raw intensity, emotion, and beauty of athletic competition — from courtside to the track.</p>
       <div class="hero-actions">
         <button class="btn-primary" onclick="showPage('portfolio')">View Portfolio</button>
-        <button class="btn-outline" onclick="showPage('contact')">Book a Session</button>
+        <button class="btn-outline" onclick="showPage('book')">Book a Session</button>
       </div>
     </div>
     <div class="hero-scroll">Scroll</div>
@@ -677,8 +684,8 @@
   <div class="contact-wrap">
     <div class="contact-left">
       <div class="c-eyebrow">Get in Touch</div>
-      <h2 class="c-title">LET'S<br>WORK<br><em>together</em></h2>
-      <p class="c-desc">Whether it's a championship game, a local showcase, or an athlete portrait session — let's capture moments that last.</p>
+      <h2 class="c-title">SAY<br><em>hello</em></h2>
+      <p class="c-desc">Have a question, a project idea, or just want to connect? Reach out directly through any of the channels below.</p>
 
       <!-- CONTACT DETAILS — EDIT all values below -->
       <div class="c-info-list">
@@ -687,7 +694,7 @@
           <div>
             <span class="c-lbl">Email</span>
             <!-- EDIT: your email -->
-            <span class="c-val">hello@zepheraphotography.com</span>
+            <span class="c-val"><a href="mailto:zepheraphotography@gmail.com">zepheraphotography@gmail.com"</a></span>
           </div>
         </div>
         <div class="c-info-item">
@@ -695,7 +702,7 @@
           <div>
             <span class="c-lbl">Phone</span>
             <!-- EDIT: your phone -->
-            <span class="c-val">+1 (555) 000-0000</span>
+            <span class="c-val"><a href="tel:+16098743344">+1 (609) 874-3344</a></span>
           </div>
         </div>
         <div class="c-info-item">
@@ -710,38 +717,41 @@
           <div class="c-icon">📸</div>
           <div>
             <span class="c-lbl">Instagram</span>
-            <!-- EDIT: your Instagram -->
-            <span class="c-val">
-              <a href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">@zephera_photography</a>
-            </span>
+            <span class="c-val"><a href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">@zephera_photography</a></span>
           </div>
         </div>
       </div>
+
+      <div style="margin-top:36px;">
+        <button class="btn-primary" onclick="showPage('book')" style="width:100%;">Book a Session →</button>
+      </div>
     </div>
 
+    <!-- Right side: quick FAQ / what to expect -->
     <div class="contact-right">
-      <div class="form-title">Send a Message</div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-lbl">First Name</label><input type="text" class="form-ctrl" placeholder="Jane"></div>
-        <div class="form-group"><label class="form-lbl">Last Name</label><input type="text" class="form-ctrl" placeholder="Smith"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-lbl">Email</label><input type="email" class="form-ctrl" placeholder="jane@example.com"></div>
-        <div class="form-group"><label class="form-lbl">Phone</label><input type="tel" class="form-ctrl" placeholder="+1 (555) 000-0000"></div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group">
-          <label class="form-lbl">Sport / Event Type</label>
-          <select class="form-ctrl" id="sport-select"><option value="">Select a sport...</option></select>
+      <div class="form-title">What to Expect</div>
+      <div class="c-faq">
+        <div class="c-faq-item">
+          <span class="c-faq-q">How far in advance should I book?</span>
+          <span class="c-faq-a">At least 1–2 weeks for local events. For tournaments and showcases, the earlier the better — weekends fill up fast.</span>
+        </div>
+        <div class="c-faq-item">
+          <span class="c-faq-q">What sports do you cover?</span>
+          <span class="c-faq-a">Basketball, volleyball, softball, baseball, athletics, camps and showcases. Open to other sports too — just ask.</span>
+        </div>
+        <div class="c-faq-item">
+          <span class="c-faq-q">How do I receive my photos?</span>
+          <span class="c-faq-a">Edited photos are delivered via an online gallery link, typically within 5–7 business days of the event.</span>
+        </div>
+        <div class="c-faq-item">
+          <span class="c-faq-q">Do you travel for events?</span>
+          <span class="c-faq-a">Yes — available nationwide. Travel fees may apply for events outside the local area.</span>
+        </div>
+        <div class="c-faq-item">
+          <span class="c-faq-q">Can I print or share my photos?</span>
+          <span class="c-faq-a">Personal use (sharing on social media, printing for yourself) is always included. Commercial licensing is available on request.</span>
         </div>
       </div>
-      <div class="form-row full">
-        <div class="form-group"><label class="form-lbl">Event Date (if known)</label><input type="date" class="form-ctrl"></div>
-      </div>
-      <div class="form-row full">
-        <div class="form-group"><label class="form-lbl">Message</label><textarea class="form-ctrl" placeholder="Tell me about your event, team, location, and what you need..."></textarea></div>
-      </div>
-      <button class="form-submit" onclick="submitContact()">Send Message</button>
     </div>
   </div>
 
@@ -750,6 +760,108 @@
     <div class="footer-links">
       <button class="footer-btn" onclick="showPage('home')">Home</button>
       <button class="footer-btn" onclick="showPage('portfolio')">Portfolio</button>
+      <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     BOOK A SESSION PAGE
+     ══════════════════════════════════════════ -->
+<div class="page" id="page-book">
+  <div class="page-topbar">
+    <button class="page-back" onclick="goBack()">← Back</button>
+  </div>
+  <div class="contact-wrap">
+    <div class="contact-left">
+      <div class="c-eyebrow">Ready to Book</div>
+      <h2 class="c-title">BOOK A<br><em>session</em></h2>
+      <p class="c-desc">Fill out the form with your event details and I'll get back to you within 24 hours to confirm availability and discuss next steps.</p>
+      <div class="c-info-list">
+        <div class="c-info-item">
+          <div class="c-icon">⚡</div>
+          <div>
+            <span class="c-lbl">Response Time</span>
+            <span class="c-val">Within 24 hours</span>
+          </div>
+        </div>
+        <div class="c-info-item">
+          <div class="c-icon">📍</div>
+          <div>
+            <span class="c-lbl">Coverage Area</span>
+            <span class="c-val">United States — Available Nationwide</span>
+          </div>
+        </div>
+        <div class="c-info-item">
+          <div class="c-icon">✉</div>
+          <div>
+            <span class="c-lbl">Prefer Email?</span>
+            <!-- EDIT: your email -->
+            <span class="c-val"><a href="mailto:zepheraphotography@gmail.com">zepheraphotography@gmail.com"</a></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-right">
+      <div class="form-title">Event Details</div>
+
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">First Name *</label><input type="text" class="form-ctrl" placeholder="Jane"></div>
+        <div class="form-group"><label class="form-lbl">Last Name *</label><input type="text" class="form-ctrl" placeholder="Smith"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">Email *</label><input type="email" class="form-ctrl" placeholder="jane@example.com"></div>
+        <div class="form-group"><label class="form-lbl">Phone</label><input type="tel" class="form-ctrl" placeholder="+1 (555) 000-0000"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-lbl">Sport / Event Type *</label>
+          <select class="form-ctrl" id="book-sport-select">
+            <option value="">Select a sport...</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-lbl">Event Date *</label><input type="date" class="form-ctrl"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-lbl">Event Location / City *</label><input type="text" class="form-ctrl" placeholder="e.g. Los Angeles, CA"></div>
+        <div class="form-group"><label class="form-lbl">Team / Organization Name</label><input type="text" class="form-ctrl" placeholder="e.g. LA Tigers"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-lbl">Estimated No. of Athletes</label>
+          <select class="form-ctrl">
+            <option value="">Select...</option>
+            <option>1–10</option>
+            <option>11–30</option>
+            <option>31–60</option>
+            <option>60+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-lbl">Budget Range</label>
+          <select class="form-ctrl">
+            <option value="">Select...</option>
+            <option>Under $300</option>
+            <option>$300 – $600</option>
+            <option>$600 – $1,000</option>
+            <option>$1,000+</option>
+            <option>Let's discuss</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group"><label class="form-lbl">Additional Details</label><textarea class="form-ctrl" placeholder="Anything else I should know — duration of event, specific shots you want, turnaround needs, etc."></textarea></div>
+      </div>
+      <button class="form-submit" onclick="submitBooking()">Send Booking Request</button>
+    </div>
+  </div>
+
+  <footer>
+    <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
+    <div class="footer-links">
+      <button class="footer-btn" onclick="showPage('home')">Home</button>
+      <button class="footer-btn" onclick="showPage('contact')">Contact</button>
       <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
     </div>
   </footer>
@@ -874,7 +986,14 @@ function showPage(id, isBack) {
   const nb = document.getElementById('nav-' + id);
   if (nb) nb.classList.add('active');
   if (id === 'home')    document.getElementById('nav-home').classList.add('active');
-  if (id === 'portfolio') document.getElementById('nav-portfolio').classList.add('active');
+  if (id === 'portfolio' || sports.find(s => s.id === id)) {
+    const pn = document.getElementById('nav-portfolio');
+    if (pn) pn.classList.add('active');
+  }
+  if (id === 'contact' || id === 'book') {
+    const nb = document.getElementById('nav-contact');
+    if (nb) nb.classList.add('active');
+  }
 
   /* Close menus */
   closeDD();
@@ -1043,7 +1162,7 @@ function emptyState(sport) {
       <div class="empty-icon">${sport.icon}</div>
       <div class="empty-title">Coming Soon</div>
       <p class="empty-text">Photos from ${sport.label} are on their way.<br>Check back soon or get in touch to book a session.</p>
-      <button class="btn-primary" onclick="showPage('contact')">Book a Session</button>
+      <button class="btn-primary" onclick="showPage('book')">Book a Session</button>
     </div>`;
 }
 
@@ -1230,16 +1349,21 @@ function renameFolder(id) {
    CONTACT FORM SELECT SYNC
    ───────────────────────────────────────────────────────────── */
 function syncSelect() {
-  const sel = document.getElementById('sport-select');
-  if (!sel) return;
-  const cur = sel.value;
-  sel.innerHTML = '<option value="">Select a sport...</option>' +
-    sports.map(s => `<option value="${s.id}"${s.id===cur?' selected':''}>${s.label}</option>`).join('') +
+  const opts = '<option value="">Select a sport...</option>' +
+    sports.map(s => `<option value="${s.id}">${s.label}</option>`).join('') +
     '<option value="other">Other</option>';
+  ['sport-select','book-sport-select'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = opts;
+  });
 }
 
 function submitContact() {
   toast("Message sent! I'll be in touch within 24 hours.");
+}
+
+function submitBooking() {
+  toast("Booking request sent! I'll confirm availability within 24 hours.");
 }
 
 /* ─────────────────────────────────────────────────────────────
