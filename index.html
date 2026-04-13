@@ -395,8 +395,13 @@
         1. Place your image in the same folder as this HTML file
         2. Replace the URL below with: url('your-filename.jpg')
     */
+    /*
+      Hero background image — your own photo served from Cloudflare R2.
+      EDIT: To change the hero photo, upload a new image to R2 and
+      update the URL below with the new filename.
+    */
     .hero {
-      background-image: url('https://images.unsplash.com/photo-1546519638-68e109498ffc?w=1800&q=80&auto=format&fit=crop');
+      background-image: url('https://pub-69a427f09bfb4986a3f02bc906620467.r2.dev/baseball/DSC_5773.jpg');
       background-size: cover;
       background-position: center 30%;
       background-repeat: no-repeat;
@@ -694,15 +699,25 @@
       flex-wrap: wrap;
     }
 
-    .admin-bar-label {
+    .admin-bar-hint {
       font-family: var(--font-display);
       font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 0.1em;
       color: var(--ink-2);
       flex: 1;
-      min-width: 100px;
+      text-align: right;
+      padding-right: 12px;
+    }
+
+    .empty-state code {
+      font-family: monospace;
+      font-size: 12px;
+      background: var(--bg-2);
+      border: 1px solid var(--rule);
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: var(--accent);
     }
 
     /* Small action buttons */
@@ -1713,17 +1728,78 @@ let sportsData = [
   { id: 'athletics',    label: 'Athletics / Camps & Showcases', icon: '🏃' },
 ];
 
-/* ============================================================
-   IMAGE STORE
-   Object keyed by sport id.
-   Each value = array of { id, src, name } objects.
+/* ── YOUR CLOUDFLARE R2 PUBLIC URL ──────────────────────────
+   EDIT: If you ever change your R2 bucket or URL, update this
+   one line and all photos across every gallery update instantly.
+   ─────────────────────────────────────────────────────────── */
+const R2_URL = 'https://pub-69a427f09bfb4986a3f02bc906620467.r2.dev';
 
-   Images are stored as base64 data URLs so they survive
-   page reloads without a server. For a real deployment,
-   swap this with actual file paths in your /images/ folder.
+/* ============================================================
+   ── PHOTO MANIFEST ───────────────────────────────────────────
+   THIS IS HOW YOU ADD / REMOVE PHOTOS.
+
+   For each sport, list the filenames of images you have placed
+   in the matching folder inside your R2 bucket.
+
+   ── TO ADD A PHOTO ──────────────────────────────────────────
+     1. Upload the photo to R2 inside the correct sport folder
+        e.g. baseball/pic2.jpg
+     2. Add the filename to the array below e.g. 'pic2.jpg'
+     3. Save index.html
+     4. Run:  git add . && git commit -m "Add photo" && git push
+     5. Done — live on your site within 60 seconds
+
+   ── TO REMOVE A PHOTO ───────────────────────────────────────
+     1. Delete the filename from the array below
+     2. Save, commit, push
+
+   ── TO REORDER PHOTOS ───────────────────────────────────────
+     Change the order of filenames in the array.
+     Top = first photo shown in the gallery.
+   ============================================================ */
+const photoManifest = {
+
+  basketball: [
+    /* Add basketball filenames here e.g: 'pic1.jpg', */
+  ],
+
+  volleyball: [
+    /* Add volleyball filenames here e.g: 'pic1.jpg', */
+  ],
+
+  softball: [
+    /* Add softball filenames here e.g: 'pic1.jpg', */
+  ],
+
+  baseball: [
+    'DSC_5773.jpg',
+    /* Add more baseball filenames below e.g: 'pic2.jpg', */
+  ],
+
+  athletics: [
+    /* Add athletics filenames here e.g: 'pic1.jpg', */
+  ],
+
+};
+/* ── END OF PHOTO MANIFEST ─────────────────────────────────── */
+
+
+/* ============================================================
+   IMAGE STORE — built from photoManifest above
+   Each image gets:
+     id:   unique key used for drag-reorder and lightbox
+     src:  path to the file in /images/SPORT/filename
+     name: filename (shown in lightbox footer)
    ============================================================ */
 let imageStore = {};
-sportsData.forEach(s => { imageStore[s.id] = []; });
+sportsData.forEach(s => {
+  const files = photoManifest[s.id] || [];
+  imageStore[s.id] = files.map((filename, i) => ({
+    id:   s.id + '_' + i,
+    src:  R2_URL + '/' + s.id + '/' + filename,
+    name: filename,
+  }));
+});
 
 /* ── Track which sport page is open ─── */
 let currentSportId = null;
@@ -1917,29 +1993,17 @@ function renderSportPageContent(sportId) {
 
     <!-- ── ADMIN BAR ── -->
     <!--
-      These buttons let you manage photos for this sport.
-      "Add Photos" opens the file picker.
-      "Drop Zone" toggles a drag-and-drop area.
-      "Rename" lets you rename this folder.
+      To add photos: drop files into /images/${sportId}/
+      then add the filenames to photoManifest in index.html
     -->
     <div class="admin-bar">
-      <span class="admin-bar-label">📂 ${sport.label} — Image Manager</span>
-      <button class="btn-sm btn-sm-ghost" onclick="toggleDropZone('${sportId}')">⬇ Drop Zone</button>
+      <span class="admin-bar-label">📂 ${sport.label} — ${imgs.length} photo${imgs.length !== 1 ? 's' : ''}</span>
+      <span class="admin-bar-hint">Add photos by editing the photoManifest in index.html</span>
       <button class="btn-sm btn-sm-ghost" onclick="renameFolder('${sportId}')">✏ Rename</button>
-      <button class="btn-sm btn-sm-accent" onclick="triggerUpload('${sportId}')">+ Add Photos</button>
     </div>
 
     <!-- ── GALLERY SECTION ── -->
     <div class="gallery-wrap">
-
-      <!-- Drag & Drop Zone -->
-      <div class="drop-zone" id="drop-zone-${sportId}">
-        <div class="drop-zone-icon">📂</div>
-        <p class="drop-zone-text">
-          <strong>Drag &amp; drop images here</strong><br>
-          Supports JPG, PNG, WEBP, GIF — multiple files at once
-        </p>
-      </div>
 
       <!-- View / Sort toolbar -->
       <div class="gallery-toolbar">
@@ -1978,9 +2042,6 @@ function renderSportPageContent(sportId) {
     </footer>
   `;
 
-  /* Attach drag-and-drop upload listener */
-  setupDropZone(sportId);
-
   /* Attach drag-to-reorder on each photo card */
   initDragToReorder(sportId);
 }
@@ -1993,9 +2054,12 @@ function renderEmptyState(sportId) {
       <div class="empty-state-icon">${sport ? sport.icon : '📸'}</div>
       <div class="empty-state-title">No photos yet</div>
       <p class="empty-state-text">
-        Click "+ Add Photos" above or toggle the Drop Zone to upload your first ${sport ? sport.label : ''} shots.
+        To add photos to this gallery:<br><br>
+        <strong>1.</strong> Copy your images into <code>images/${sportId}/</code><br>
+        <strong>2.</strong> Open <code>index.html</code> in VS Code<br>
+        <strong>3.</strong> Find <code>photoManifest</code> and add your filenames<br>
+        <strong>4.</strong> Save → <code>git add . &amp;&amp; git commit -m "Add photos" &amp;&amp; git push</code>
       </p>
-      <button class="btn-primary" onclick="triggerUpload('${sportId}')">+ Add First Photo</button>
     </div>
   `;
 }
@@ -2081,48 +2145,9 @@ function setupDropZone(sportId) {
 }
 
 /* ============================================================
-   FILE UPLOAD
-   ============================================================ */
-function triggerUpload(sportId) {
-  uploadTargetSport = sportId;
-  const fi = document.getElementById('file-input');
-  fi.value = ''; /* reset so same file can be re-added */
-  fi.click();
-}
-
-document.getElementById('file-input').addEventListener('change', function () {
-  if (this.files.length && uploadTargetSport) {
-    handleImageFiles([...this.files], uploadTargetSport);
-  }
-});
-
-function handleImageFiles(files, sportId) {
-  if (!imageStore[sportId]) imageStore[sportId] = [];
-  let loaded = 0;
-  const valid = files.filter(f => f.type.startsWith('image/'));
-  if (!valid.length) { showToast('No valid images found.'); return; }
-
-  valid.forEach(file => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const id = 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
-      imageStore[sportId].push({ id, src: e.target.result, name: file.name });
-      loaded++;
-      if (loaded === valid.length) {
-        /* Re-render this sport page */
-        renderSportPageContent(sportId);
-        /* If this page is currently active, re-init drag */
-        initDragToReorder(sportId);
-        updateDropdownCounts();
-        showToast(valid.length + ' photo' + (valid.length > 1 ? 's' : '') + ' added to ' + sportsData.find(s => s.id === sportId)?.label);
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-/* ============================================================
-   DELETE PHOTO
+   DELETE PHOTO  (removes from imageStore and re-renders)
+   Note: this only removes it from the current session view.
+   To permanently remove, delete from photoManifest in index.html.
    ============================================================ */
 function deletePhoto(sportId, imgId) {
   if (!confirm('Remove this photo from the gallery?')) return;
