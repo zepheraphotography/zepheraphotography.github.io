@@ -433,6 +433,83 @@
       .lb-wrap { padding:56px 52px 32px; }
     }
 
+    /* ── PORTFOLIO OVERVIEW PAGE ───────────────────────────────── */
+    .portfolio-header {
+      padding:56px 40px 40px;
+      border-bottom:1px solid var(--rule);
+    }
+    .portfolio-title {
+      font-family:var(--fd); font-size:clamp(48px,8vw,96px);
+      font-weight:700; letter-spacing:0.02em; line-height:0.92;
+      color:var(--ink); margin-bottom:12px;
+    }
+    .portfolio-sub {
+      font-size:15px; color:var(--ink2);
+    }
+    .portfolio-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+      gap:2px;
+      border-bottom:1px solid var(--rule);
+    }
+    .sport-card {
+      position:relative; overflow:hidden;
+      background:var(--ink); aspect-ratio:4/3;
+      cursor:pointer; border:none; padding:0;
+      transition:opacity 0.2s;
+    }
+    .sport-card:hover { opacity:0.9; }
+    .sport-card-bg {
+      position:absolute; inset:0;
+      background:linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      display:flex; align-items:center; justify-content:center;
+      font-size:64px; opacity:0.12;
+    }
+    .sport-card-overlay {
+      position:absolute; inset:0;
+      background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+    }
+    .sport-card-content {
+      position:absolute; bottom:0; left:0; right:0;
+      padding:24px 28px;
+    }
+    .sport-card-num {
+      font-family:var(--fd); font-size:10px; font-weight:600;
+      letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--accent); display:block; margin-bottom:6px;
+    }
+    .sport-card-name {
+      font-family:var(--fd); font-size:32px; font-weight:700;
+      letter-spacing:0.03em; color:#fff; display:block; margin-bottom:6px;
+      line-height:1;
+    }
+    .sport-card-count {
+      font-size:12px; color:rgba(255,255,255,0.5);
+      letter-spacing:0.08em;
+    }
+    .sport-card-arrow {
+      position:absolute; top:20px; right:20px;
+      width:36px; height:36px;
+      border:1px solid rgba(255,255,255,0.2);
+      border-radius:50%; display:flex; align-items:center;
+      justify-content:center; color:rgba(255,255,255,0.6);
+      font-size:14px; transition:background 0.2s, border-color 0.2s;
+    }
+    .sport-card:hover .sport-card-arrow { background:var(--accent); border-color:var(--accent); color:#fff; }
+    @media (max-width:768px) {
+      .portfolio-header { padding:32px 24px 28px; }
+      .portfolio-grid   { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:480px) {
+      .portfolio-grid { grid-template-columns:1fr; }
+    }
+
+    /* ── PAGE TOP BAR (back button for Contact and inner pages) ── */
+    .page-topbar { padding:20px 40px; border-bottom:1px solid var(--rule); display:flex; align-items:center; }
+    .page-back { display:flex; align-items:center; gap:8px; font-family:var(--fd); font-size:11px; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--ink2); background:none; border:none; cursor:pointer; padding:0; transition:color 0.2s; }
+    .page-back:hover { color:var(--accent); }
+    @media (max-width:768px) { .page-topbar { padding:16px 24px; } }
+
     /* ── IMAGE PROTECTION ───────────────────────────────────── */
     .photo-card, .photo-card img, #lb-img { -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
 
@@ -515,7 +592,7 @@
       <!-- EDIT: hero tagline -->
       <p class="hero-sub">Professional sports photography capturing the raw intensity, emotion, and beauty of athletic competition — from courtside to the track.</p>
       <div class="hero-actions">
-        <button class="btn-primary" onclick="showPage('basketball')">View Portfolio</button>
+        <button class="btn-primary" onclick="showPage('portfolio')">View Portfolio</button>
         <button class="btn-outline" onclick="showPage('contact')">Book a Session</button>
       </div>
     </div>
@@ -561,6 +638,32 @@
   </footer>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════
+     PORTFOLIO OVERVIEW PAGE
+     Shows all sports as clickable cards.
+     Cards are built dynamically by JS so they always reflect
+     the current sports list.
+     ══════════════════════════════════════════════════════════ -->
+<div class="page" id="page-portfolio">
+  <div class="page-topbar">
+    <button class="page-back" onclick="goBack()">← Back</button>
+  </div>
+  <div class="portfolio-header">
+    <h1 class="portfolio-title">PORTFOLIO</h1>
+    <p class="portfolio-sub">Select a sport to view the gallery.</p>
+  </div>
+  <!-- Sport cards injected here by buildPortfolioPage() -->
+  <div class="portfolio-grid" id="portfolio-grid"></div>
+  <footer>
+    <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
+    <div class="footer-links">
+      <button class="footer-btn" onclick="showPage('home')">Home</button>
+      <button class="footer-btn" onclick="showPage('contact')">Contact</button>
+      <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </footer>
+</div>
+
 <!-- Sport gallery pages injected here by JS -->
 <div id="sport-pages"></div>
 
@@ -568,6 +671,9 @@
      CONTACT PAGE
      ══════════════════════════════════════════ -->
 <div class="page" id="page-contact">
+  <div class="page-topbar">
+    <button class="page-back" onclick="goBack()">← Back</button>
+  </div>
   <div class="contact-wrap">
     <div class="contact-left">
       <div class="c-eyebrow">Get in Touch</div>
@@ -643,7 +749,7 @@
     <span class="footer-copy">© 2025 Zephera Photography. All rights reserved.</span>
     <div class="footer-links">
       <button class="footer-btn" onclick="showPage('home')">Home</button>
-      <button class="footer-btn" onclick="showPage('basketball')">Portfolio</button>
+      <button class="footer-btn" onclick="showPage('portfolio')">Portfolio</button>
       <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
     </div>
   </footer>
@@ -725,10 +831,23 @@ const LOCAL = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
 /* Currently open sport */
 let activeSport = null;
 
+/* Navigation history stack — powers the Back button */
+let navHistory = [];
+
 /* ─────────────────────────────────────────────────────────────
    PAGE NAVIGATION
    ───────────────────────────────────────────────────────────── */
-function showPage(id) {
+function showPage(id, isBack) {
+  /* Push current page to history before navigating (unless this IS a back navigation) */
+  const current = document.querySelector('.page.active');
+  if (!isBack && current) {
+    const currentId = current.id.replace('page-', '');
+    if (currentId !== id) navHistory.push(currentId);
+  }
+
+  /* Build portfolio overview page if navigating to it */
+  if (id === 'portfolio') buildPortfolioPage();
+
   /* Build sport page if needed */
   if (sports.find(s => s.id === id)) {
     let pg = document.getElementById('page-' + id);
@@ -755,7 +874,7 @@ function showPage(id) {
   const nb = document.getElementById('nav-' + id);
   if (nb) nb.classList.add('active');
   if (id === 'home')    document.getElementById('nav-home').classList.add('active');
-  if (sports.find(s => s.id === id)) document.getElementById('nav-portfolio').classList.add('active');
+  if (id === 'portfolio') document.getElementById('nav-portfolio').classList.add('active');
 
   /* Close menus */
   closeDD();
@@ -770,6 +889,16 @@ function showPage(id) {
   /* Sync contact select and nav */
   syncSelect();
   buildNav();
+}
+
+/* Go back to the previous page in the navigation stack */
+function goBack() {
+  if (navHistory.length > 0) {
+    const prev = navHistory.pop();
+    showPage(prev, true); /* true = this is a back nav, don't push to history */
+  } else {
+    showPage('home', true); /* fallback if no history */
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -820,6 +949,11 @@ function buildNav() {
   const panel = document.getElementById('dd-panel');
   if (panel) {
     panel.innerHTML =
+      `<button class="dd-item" onclick="showPage('portfolio')" role="menuitem">
+        <span class="dd-icon">📂</span>
+        All Sports
+      </button>
+      <div class="dd-divider"></div>` +
       sports.map(s => `
         <button class="dd-item ${activeSport===s.id?'active':''}" onclick="showPage('${s.id}')" role="menuitem">
           <span class="dd-icon">${s.icon}</span>
@@ -836,7 +970,7 @@ function buildNav() {
   if (mob) {
     mob.innerHTML =
       `<button class="mob-link" onclick="showPage('home')">🏠 Home</button>
-       <button class="mob-link" style="pointer-events:none;opacity:0.5">📂 Portfolio</button>
+       <button class="mob-link" onclick="showPage('portfolio')">📂 All Sports</button>
        <div class="mob-sub">
          ${sports.map(s=>`<button class="mob-link ${activeSport===s.id?'active':''}" onclick="showPage('${s.id}')">${s.icon} ${s.label}</button>`).join('')}
          ${LOCAL ? `<button class="mob-link" onclick="openModal();closeMob()" style="color:var(--accent)">⚙ Manage Folders</button>` : ''}
@@ -858,7 +992,7 @@ function buildSportPage(id) {
   page.innerHTML = `
     <div class="gal-header">
       <div class="gal-title-block">
-        <button class="gal-back" onclick="showPage('home')">← All Sports</button>
+        <button class="gal-back" onclick="goBack()">← Back</button>
         <h1 class="gal-title">${sport.label.toUpperCase()}</h1>
       </div>
       <div class="gal-count-wrap">
@@ -1111,6 +1245,31 @@ function submitContact() {
 /* ─────────────────────────────────────────────────────────────
    BUILD ALL SPORT PAGES
    ───────────────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   BUILD PORTFOLIO OVERVIEW PAGE
+   Renders a card grid of all sports.
+   Called every time the portfolio page is shown so counts stay fresh.
+   ───────────────────────────────────────────────────────────── */
+function buildPortfolioPage() {
+  const grid = document.getElementById('portfolio-grid');
+  if (!grid) return;
+  grid.innerHTML = sports.map((s, i) => {
+    const count = (store[s.id] || []).length;
+    const numLabel = String(i + 1).padStart(2, '0');
+    return `
+      <button class="sport-card" onclick="showPage('${s.id}')">
+        <div class="sport-card-bg">${s.icon}</div>
+        <div class="sport-card-overlay"></div>
+        <div class="sport-card-content">
+          <span class="sport-card-num">${numLabel}</span>
+          <span class="sport-card-name">${s.label.toUpperCase()}</span>
+          <span class="sport-card-count">${count > 0 ? count + ' photo' + (count !== 1 ? 's' : '') : 'Coming soon'}</span>
+        </div>
+        <div class="sport-card-arrow">→</div>
+      </button>`;
+  }).join('');
+}
+
 function buildAllSportPages() {
   const container = document.getElementById('sport-pages');
   /* Remove pages for deleted sports */
