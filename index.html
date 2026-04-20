@@ -1202,6 +1202,7 @@ function buildSportPage(id) {
   const page = document.getElementById('page-' + id);
   if (!page) return;
   const imgs = store[id] || [];
+  imgs.sort(() => Math.random() - 0.5); // Shuffle the images randomly
 
   page.innerHTML = `
     <div class="gal-header">
