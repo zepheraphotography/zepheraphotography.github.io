@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Redirecting…</title>
+  <style>body{font-family:system-ui,-apple-system,blinkmacsystemfont,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:#fafaf8;color:#111;padding:40px;text-align:center;}a{color:#b5451b;text-decoration:none;}</style>
+</head>
+<body>
+  <h1>Redirecting...</h1>
+  <p>If you are not redirected, <a id="home-link" href="/">click here</a>.</p>
+  <script>
+    const path = window.location.pathname.replace(/^\//, '');
+    const search = window.location.search || '';
+    const page = path && path !== 'index.html' ? path : '';
+    const target = '/' + search + (page ? '#' + page : '');
+    document.getElementById('home-link').href = target;
+    window.location.replace(target);
+  </script>
+</body>
+</html>
