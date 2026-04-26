@@ -928,30 +928,30 @@ const manifest = {
     "bas1.jpg",
     "bas2.jpg",
     "bas3.jpg",
+    "bas11.jpg",
     "bas4.jpg",
+    "bas8.jpg",
     "bas5.jpg",
     "bas6.jpg",
     "bas7.jpg",
-    "bas8.jpg",
     "bas9.jpg",
     "bas10.jpg",
-    "bas11.jpg",
     /* e.g. 'pic1.jpg', 'pic2.jpg', */
   ],
   volleyball: [
+    "vb6.jpg",
     "vb1.jpg",
-    "vb2.jpg",
     "vb3.jpg",
     "vb4.jpg",
-    "vb5.jpg",
-    "vb6.jpg",
     "vb7.jpg",
-    "vb8.jpg",
+    "vb5.jpg",
     "vb9.jpg",
     "vb10.jpg",
     "vb11.jpg",
+    "vb2.jpg",
     "vb12.jpg",
     "vb13.jpg",
+    "vb8.jpg",
     /* e.g. 'pic1.jpg', */
   ],
   softball: [
@@ -970,17 +970,17 @@ const manifest = {
     'bb1.jpg',
     'bb3.jpg',
     'bb2.jpg',
-    'bb4.jpg',
     'bb5.jpg',
     'bb6.jpg',
-    'bb7.jpg',
     'bb8.jpg',
+    'bb4.jpg',
     'bb9.jpg',
-    'bb10.jpg',
+    'heroimg.jpg',
     'bb11.jpg',
+    'bb7.jpg',
     'bb12.jpg',
     'bb13.jpg',
-    'heroimg.jpg',
+    'bb10.jpg',
   ],
   athletics: [
     "1.jpg",
@@ -989,20 +989,20 @@ const manifest = {
     "4.jpg",
     "5.jpg",
     "6.jpg",
+    "14.jpg",
     "7.jpg",
+    "12.jpg",
+    "16.jpg",
     "8.jpg",
     "9.jpg",
+    "20.jpg",
     "10.jpg",
     "11.jpg",
-    "12.jpg",
     "13.jpg",
-    "14.jpg",
     "15.jpg",
-    "16.jpg",
     "17.jpg",
     "18.jpg",
     "19.jpg",
-    "20.jpg",
     /* e.g. 'pic1.jpg', */
   ],
 };
@@ -1371,15 +1371,8 @@ function initDrag(id) {
       const fi = arr.findIndex(i => i.id === src);
       const ti = arr.findIndex(i => i.id === card.dataset.id);
       if (fi < 0 || ti < 0) return;
-
-      const rect = card.getBoundingClientRect();
-      const before = e.clientY - rect.top < rect.height / 2;
-      const [m] = arr.splice(fi, 1);
-      const insertAt = before
-        ? (fi < ti ? ti - 1 : ti)
-        : (fi < ti ? ti : ti + 1);
-
-      arr.splice(insertAt, 0, m);
+      // Swap the two items
+      [arr[fi], arr[ti]] = [arr[ti], arr[fi]];
       saveOrder(id);
       buildSportPage(id);
       initDrag(id);
