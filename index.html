@@ -1371,8 +1371,15 @@ function initDrag(id) {
       const fi = arr.findIndex(i => i.id === src);
       const ti = arr.findIndex(i => i.id === card.dataset.id);
       if (fi < 0 || ti < 0) return;
+
+      const rect = card.getBoundingClientRect();
+      const before = e.clientY - rect.top < rect.height / 2;
       const [m] = arr.splice(fi, 1);
-      arr.splice(ti, 0, m);
+      const insertAt = before
+        ? (fi < ti ? ti - 1 : ti)
+        : (fi < ti ? ti : ti + 1);
+
+      arr.splice(insertAt, 0, m);
       saveOrder(id);
       buildSportPage(id);
       initDrag(id);
