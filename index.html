@@ -315,10 +315,10 @@
     .card-btn:hover { background:rgba(255,255,255,0.2); }
     .card-btn.del:hover { background:rgba(192,57,43,0.75); }
 
-    /* Drag (local only) */
-    .photo-card.dragging  { opacity:0.35; }
-    .photo-card.drag-over { outline:2px dashed var(--accent); outline-offset:2px; }
-    .drag-handle { color:rgba(255,255,255,0.5); font-size:16px; cursor:grab; padding:4px; margin-right:auto; }
+    /* Drag (local or hidden admin mode) */
+    .photo-card.dragging  { opacity:0.45; transform:scale(0.99); transition:opacity 0.15s ease, transform 0.15s ease; }
+    .photo-card.drag-over { outline:2px dashed var(--accent); outline-offset:4px; box-shadow:0 0 0 2px rgba(181,69,27,0.14); }
+    .drag-handle { color:rgba(255,255,255,0.75); font-size:18px; cursor:grab; padding:6px; margin-right:auto; }
 
     @keyframes fadein { from { opacity:0; transform:scale(0.97); } to { opacity:1; transform:scale(1); } }
 
@@ -1010,18 +1010,69 @@ const manifest = {
    INTERNAL STATE — do not edit below this line
    ───────────────────────────────────────────────────────────── */
 
+/* Is the site running locally (VS Code / localhost)? */
+const LOCAL = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+
+/* Hidden admin mode — use ?admin=zephera-admin&pwd=zephera2025 */
+const ADMIN_SECRET = 'zephera-admin';
+const ADMIN_PASSWORD = 'zephera2025';
+
+function isAdminAuthorized() {
+  if (localStorage.getItem('zephera-admin-auth') === 'granted') return true;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('admin') !== ADMIN_SECRET) return false;
+  const password = params.get('pwd');
+  if (password === ADMIN_PASSWORD) {
+    localStorage.setItem('zephera-admin-auth', 'granted');
+    return true;
+  }
+  return false;
+}
+
+const ADMIN = isAdminAuthorized();
+const EDIT_MODE = LOCAL || ADMIN;
+
 /* Build image store from manifest */
 let store = {};
+
+function getSavedOrder(id) {
+  try {
+    const raw = localStorage.getItem('zephera-admin-order-' + id);
+    const parsed = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) ? parsed : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function saveOrder(id) {
+  if (!EDIT_MODE || !store[id]) return;
+  try {
+    localStorage.setItem('zephera-admin-order-' + id, JSON.stringify(store[id].map(img => img.name)));
+  } catch (err) {
+    // ignore storage errors
+  }
+}
+
 sports.forEach(s => {
-  store[s.id] = (manifest[s.id] || []).map((f, i) => ({
+  const items = (manifest[s.id] || []).map((f, i) => ({
     id:   s.id + '_' + i,
     src:  R2_URL + '/' + s.id + '/' + f,
     name: f,
   }));
-});
 
-/* Is the site running locally (VS Code / localhost)? */
-const LOCAL = ['localhost', '127.0.0.1', ''].includes(window.location.hostname);
+  if (EDIT_MODE) {
+    const saved = getSavedOrder(s.id);
+    if (saved) {
+      const ordered = saved.map(name => items.find(item => item.name === name)).filter(Boolean);
+      const missing = items.filter(item => !saved.includes(item.name));
+      store[s.id] = ordered.concat(missing);
+      return;
+    }
+  }
+
+  store[s.id] = items;
+});
 
 /* Currently open sport */
 let activeSport = null;
@@ -1089,9 +1140,6 @@ function showPage(id, isBack) {
 
   /* Scroll top */
   window.scrollTo({ top:0, behavior:'instant' });
-
-  /* Drag-to-reorder: local only */
-  if (LOCAL && sports.find(s => s.id === id)) initDrag(id);
 
   /* Set minimum date for booking form */
   // if (id === 'book') setMinDate();
@@ -1206,8 +1254,8 @@ function buildSportPage(id) {
   if (!sport) return;
   const page = document.getElementById('page-' + id);
   if (!page) return;
-  const imgs = store[id] || [];
-  imgs.sort(() => Math.random() - 0.5); // Shuffle the images randomly
+  const imgs = [...(store[id] || [])];
+  const cols = getSavedCols();
 
   page.innerHTML = `
     <div class="gal-header">
@@ -1215,30 +1263,27 @@ function buildSportPage(id) {
         <button class="gal-back" onclick="goBack()">← Back</button>
         <h1 class="gal-title">${sport.label.toUpperCase()}</h1>
       </div>
-      <!-- <div class="gal-count-wrap">
-        <span class="gal-count-num" id="cnt-${id}">${imgs.length}</span>
-        <span class="gal-count-lbl">Photos</span>
-      </div> -->
     </div>
 
-    ${LOCAL ? `
+    ${EDIT_MODE ? `
     <div class="admin-bar">
-      <span class="admin-label">📂 LOCAL EDIT MODE — ${sport.label}</span>
-      <span class="admin-hint">Add filenames to the manifest in index.html → push to GitHub</span>
-      <button class="btn-sm btn-ghost" onclick="renameFolder('${id}')">✏ Rename</button>
+      <span class="admin-label">${ADMIN ? '🔒 HIDDEN ADMIN MODE' : '📂 LOCAL EDIT MODE'} — ${sport.label}</span>
+      <span class="admin-hint">${ADMIN ? 'Choose the final column layout and drag images to reorder.' : 'Add filenames to the manifest in index.html → push to GitHub'}</span>
+      ${LOCAL ? `<button class="btn-sm btn-ghost" onclick="renameFolder('${id}')">✏ Rename</button>` : ''}
     </div>` : ''}
 
+    ${EDIT_MODE ? `
     <div class="gal-toolbar">
       <div class="view-toggle">
-        <button class="view-btn"        title="1 col"  onclick="setCols(this,1,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="14" height="4" fill="currentColor"/><rect x="0" y="5" width="14" height="4" fill="currentColor"/><rect x="0" y="10" width="14" height="4" fill="currentColor"/></svg></button>
-        <button class="view-btn"        title="2 cols" onclick="setCols(this,2,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="6" height="6" fill="currentColor"/><rect x="8" y="0" width="6" height="6" fill="currentColor"/><rect x="0" y="8" width="6" height="6" fill="currentColor"/><rect x="8" y="8" width="6" height="6" fill="currentColor"/></svg></button>
-        <button class="view-btn"        title="3 cols" onclick="setCols(this,3,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="4" height="4" fill="currentColor"/><rect x="5" y="0" width="4" height="4" fill="currentColor"/><rect x="10" y="0" width="4" height="4" fill="currentColor"/><rect x="0" y="5" width="4" height="4" fill="currentColor"/><rect x="5" y="5" width="4" height="4" fill="currentColor"/><rect x="10" y="5" width="4" height="4" fill="currentColor"/></svg></button>
-        <button class="view-btn active" title="4 cols" onclick="setCols(this,4,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="2" height="6" fill="currentColor"/><rect x="4" y="0" width="2" height="6" fill="currentColor"/><rect x="8" y="0" width="2" height="6" fill="currentColor"/><rect x="12" y="0" width="2" height="6" fill="currentColor"/><rect x="0" y="8" width="2" height="6" fill="currentColor"/><rect x="4" y="8" width="2" height="6" fill="currentColor"/><rect x="8" y="8" width="2" height="6" fill="currentColor"/><rect x="12" y="8" width="2" height="6" fill="currentColor"/></svg></button>
+        <button class="view-btn ${cols===1?'active':''}" title="1 col"  onclick="setCols(this,1,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="14" height="4" fill="currentColor"/><rect x="0" y="5" width="14" height="4" fill="currentColor"/><rect x="0" y="10" width="14" height="4" fill="currentColor"/></svg></button>
+        <button class="view-btn ${cols===2?'active':''}" title="2 cols" onclick="setCols(this,2,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="6" height="6" fill="currentColor"/><rect x="8" y="0" width="6" height="6" fill="currentColor"/><rect x="0" y="8" width="6" height="6" fill="currentColor"/><rect x="8" y="8" width="6" height="6" fill="currentColor"/></svg></button>
+        <button class="view-btn ${cols===3?'active':''}" title="3 cols" onclick="setCols(this,3,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="4" height="4" fill="currentColor"/><rect x="5" y="0" width="4" height="4" fill="currentColor"/><rect x="10" y="0" width="4" height="4" fill="currentColor"/><rect x="0" y="5" width="4" height="4" fill="currentColor"/><rect x="5" y="5" width="4" height="4" fill="currentColor"/><rect x="10" y="5" width="4" height="4" fill="currentColor"/></svg></button>
+        <button class="view-btn ${cols===4?'active':''}" title="4 cols" onclick="setCols(this,4,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="2" height="6" fill="currentColor"/><rect x="4" y="0" width="2" height="6" fill="currentColor"/><rect x="8" y="0" width="2" height="6" fill="currentColor"/><rect x="12" y="0" width="2" height="6" fill="currentColor"/><rect x="0" y="8" width="2" height="6" fill="currentColor"/><rect x="4" y="8" width="2" height="6" fill="currentColor"/><rect x="8" y="8" width="2" height="6" fill="currentColor"/><rect x="12" y="8" width="2" height="6" fill="currentColor"/></svg></button>
       </div>
-    </div>
+    </div>` : ''}
 
     <div class="gal-wrap">
-      <div class="masonry" id="grid-${id}">
+      <div class="masonry ${cols===1?'c1':''}${cols===2?' c2':''}${cols===3?' c3':''}" id="grid-${id}">
         ${imgs.length === 0 ? emptyState(sport) : imgs.map((img,i) => photoCard(img,i,id)).join('')}
       </div>
     </div>
@@ -1250,10 +1295,9 @@ function buildSportPage(id) {
         <button class="footer-btn" onclick="showPage('contact')">Contact</button>
         <a class="footer-lnk" href="https://www.instagram.com/zephera_photography" target="_blank" rel="noopener">Instagram</a>
       </div>
-    </footer>
-  `;
+    </footer>`;
 
-  if (LOCAL) initDrag(id);
+  if (EDIT_MODE) initDrag(id);
 }
 
 /* Empty gallery state — visitor-friendly, no dev text */
@@ -1267,13 +1311,13 @@ function emptyState(sport) {
     </div>`;
 }
 
-/* Single photo card — admin controls (delete, drag) only shown locally */
+/* Single photo card — admin controls (delete, drag) only shown locally or in hidden admin mode */
 function photoCard(img, index, sportId) {
   return `
-    <div class="photo-card" id="card-${img.id}" ${LOCAL?'draggable="true"':''} data-id="${img.id}" data-sport="${sportId}" data-index="${index}" oncontextmenu="return false" style="cursor:pointer" onclick="LB.open('${sportId}',${index})">
+    <div class="photo-card" id="card-${img.id}" data-id="${img.id}" data-sport="${sportId}" data-index="${index}" oncontextmenu="return false" style="cursor:pointer" onclick="LB.open('${sportId}',${index})">
       <img src="${img.src}" alt="Visuals by Zephera" loading="lazy" draggable="false" oncontextmenu="return false">
       <div class="card-overlay">
-        ${LOCAL ? `<span class="drag-handle" title="Drag to reorder">⠿</span>` : ''}
+        ${EDIT_MODE ? `<span class="drag-handle" draggable="true" title="Drag to reorder">⠿</span>` : ''}
         <div class="card-actions">
           <button class="card-btn" title="View fullscreen" onclick="event.stopPropagation(); LB.open('${sportId}',${index})">⤢</button>
           ${LOCAL ? `<button class="card-btn del" title="Remove" onclick="event.stopPropagation(); removePhoto('${sportId}','${img.id}')">✕</button>` : ''}
@@ -1286,28 +1330,37 @@ function photoCard(img, index, sportId) {
    COLUMN VIEW
    ───────────────────────────────────────────────────────────── */
 function setCols(btn, n, id) {
+  if (!EDIT_MODE) return;
   btn.closest('.view-toggle').querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   const g = document.getElementById('grid-' + id);
   if (!g) return;
   g.className = 'masonry';
   if (n !== 4) g.classList.add('c' + n);
+  saveCols(n);
 }
 
 /* ─────────────────────────────────────────────────────────────
-   DRAG TO REORDER (local only)
+   DRAG TO REORDER (local or hidden admin mode)
    ───────────────────────────────────────────────────────────── */
 function initDrag(id) {
   const grid = document.getElementById('grid-' + id);
   if (!grid) return;
   let src = null;
+
   grid.querySelectorAll('.photo-card').forEach(card => {
-    card.addEventListener('dragstart', e => { src = card.dataset.id; card.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
-    card.addEventListener('dragend',   ()  => { card.classList.remove('dragging'); grid.querySelectorAll('.photo-card').forEach(c => c.classList.remove('drag-over')); });
-    card.addEventListener('dragover',  e   => { e.preventDefault(); card.classList.add('drag-over'); });
-    card.addEventListener('dragleave', ()  => card.classList.remove('drag-over'));
+    card.classList.remove('dragging', 'drag-over');
+
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      if (src !== card.dataset.id) card.classList.add('drag-over');
+    });
+
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+
     card.addEventListener('drop', e => {
-      e.preventDefault(); card.classList.remove('drag-over');
+      e.preventDefault();
+      card.classList.remove('drag-over');
       if (src === card.dataset.id) return;
       const arr = store[id];
       const fi = arr.findIndex(i => i.id === src);
@@ -1315,10 +1368,29 @@ function initDrag(id) {
       if (fi < 0 || ti < 0) return;
       const [m] = arr.splice(fi, 1);
       arr.splice(ti, 0, m);
+      saveOrder(id);
       buildSportPage(id);
       initDrag(id);
       toast('Order updated.');
     });
+  });
+
+  grid.querySelectorAll('.drag-handle').forEach(handle => {
+    handle.addEventListener('dragstart', e => {
+      const card = handle.closest('.photo-card');
+      if (!card) return;
+      src = card.dataset.id;
+      card.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', src);
+    });
+
+    handle.addEventListener('dragend', () => {
+      grid.querySelectorAll('.photo-card').forEach(c => c.classList.remove('dragging', 'drag-over'));
+      src = null;
+    });
+
+    handle.addEventListener('click', e => e.stopPropagation());
   });
 }
 
