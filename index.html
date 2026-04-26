@@ -436,7 +436,10 @@
       .admin-bar  { padding:10px 24px; }
       .gal-toolbar { padding:12px 24px; }
       .gal-wrap   { padding:16px 24px 48px; }
-      .masonry    { columns:2 !important; }
+      .masonry {
+        display:grid !important;
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+      }
       .contact-wrap  { grid-template-columns:1fr; }
       .contact-left  { border-right:none; border-bottom:1px solid var(--rule); padding:40px 24px; }
       .contact-right { padding:40px 24px; }
