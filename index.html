@@ -1019,15 +1019,9 @@ const ADMIN_SECRET = 'zephera-admin';
 const ADMIN_PASSWORD = 'zephera2025';
 
 function isAdminAuthorized() {
-  if (localStorage.getItem('zephera-admin-auth') === 'granted') return true;
   const params = new URLSearchParams(window.location.search);
   if (params.get('admin') !== ADMIN_SECRET) return false;
-  const password = params.get('pwd');
-  if (password === ADMIN_PASSWORD) {
-    localStorage.setItem('zephera-admin-auth', 'granted');
-    return true;
-  }
-  return false;
+  return params.get('pwd') === ADMIN_PASSWORD;
 }
 
 const ADMIN = isAdminAuthorized();
@@ -1066,6 +1060,13 @@ function getSavedCols() {
   } catch (err) {
     return DEFAULT_COLS;
   }
+}
+
+function getAdminCols() {
+  if (!ADMIN) return null;
+  const params = new URLSearchParams(window.location.search);
+  const n = parseInt(params.get('cols'), 10);
+  return [1,2,3,4].includes(n) ? n : null;
 }
 
 function saveCols(n) {
@@ -1274,7 +1275,9 @@ function buildSportPage(id) {
   const page = document.getElementById('page-' + id);
   if (!page) return;
   const imgs = [...(store[id] || [])];
-  const cols = getSavedCols();
+  const colsParam = getAdminCols();
+  const cols = colsParam ?? getSavedCols();
+  if (ADMIN && colsParam !== null) saveCols(cols);
 
   page.innerHTML = `
     <div class="gal-header">
@@ -1283,23 +1286,6 @@ function buildSportPage(id) {
         <h1 class="gal-title">${sport.label.toUpperCase()}</h1>
       </div>
     </div>
-
-    ${EDIT_MODE ? `
-    <div class="admin-bar">
-      <span class="admin-label">${ADMIN ? '🔒 HIDDEN ADMIN MODE' : '📂 LOCAL EDIT MODE'} — ${sport.label}</span>
-      <span class="admin-hint">${ADMIN ? 'Choose the final column layout and drag images to reorder.' : 'Add filenames to the manifest in index.html → push to GitHub'}</span>
-      ${LOCAL ? `<button class="btn-sm btn-ghost" onclick="renameFolder('${id}')">✏ Rename</button>` : ''}
-    </div>` : ''}
-
-    ${EDIT_MODE ? `
-    <div class="gal-toolbar">
-      <div class="view-toggle">
-        <button class="view-btn ${cols===1?'active':''}" title="1 col"  onclick="setCols(this,1,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="14" height="4" fill="currentColor"/><rect x="0" y="5" width="14" height="4" fill="currentColor"/><rect x="0" y="10" width="14" height="4" fill="currentColor"/></svg></button>
-        <button class="view-btn ${cols===2?'active':''}" title="2 cols" onclick="setCols(this,2,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="6" height="6" fill="currentColor"/><rect x="8" y="0" width="6" height="6" fill="currentColor"/><rect x="0" y="8" width="6" height="6" fill="currentColor"/><rect x="8" y="8" width="6" height="6" fill="currentColor"/></svg></button>
-        <button class="view-btn ${cols===3?'active':''}" title="3 cols" onclick="setCols(this,3,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="4" height="4" fill="currentColor"/><rect x="5" y="0" width="4" height="4" fill="currentColor"/><rect x="10" y="0" width="4" height="4" fill="currentColor"/><rect x="0" y="5" width="4" height="4" fill="currentColor"/><rect x="5" y="5" width="4" height="4" fill="currentColor"/><rect x="10" y="5" width="4" height="4" fill="currentColor"/></svg></button>
-        <button class="view-btn ${cols===4?'active':''}" title="4 cols" onclick="setCols(this,4,'${id}')"><svg width="14" height="14"><rect x="0" y="0" width="2" height="6" fill="currentColor"/><rect x="4" y="0" width="2" height="6" fill="currentColor"/><rect x="8" y="0" width="2" height="6" fill="currentColor"/><rect x="12" y="0" width="2" height="6" fill="currentColor"/><rect x="0" y="8" width="2" height="6" fill="currentColor"/><rect x="4" y="8" width="2" height="6" fill="currentColor"/><rect x="8" y="8" width="2" height="6" fill="currentColor"/><rect x="12" y="8" width="2" height="6" fill="currentColor"/></svg></button>
-      </div>
-    </div>` : ''}
 
     <div class="gal-wrap">
       <div class="masonry ${cols===1?'c1':''}${cols===2?' c2':''}${cols===3?' c3':''}${cols===4?' c4':''}" id="grid-${id}">
