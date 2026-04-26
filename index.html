@@ -300,6 +300,7 @@
     /* Masonry grid */
     .gal-wrap { padding:24px 40px 64px; }
     .masonry { columns:3; column-gap:8px; }
+    .masonry.c4 { columns:4; }
     .masonry.c3 { columns:3; }
     .masonry.c2 { columns:2; }
     .masonry.c1 { columns:1; }
@@ -1054,6 +1055,24 @@ function saveOrder(id) {
   }
 }
 
+const DEFAULT_COLS = 3;
+const COL_STORAGE_KEY = 'zephera-admin-cols';
+
+function getSavedCols() {
+  try {
+    const raw = localStorage.getItem(COL_STORAGE_KEY);
+    const n = parseInt(raw, 10);
+    return [1,2,3,4].includes(n) ? n : DEFAULT_COLS;
+  } catch (err) {
+    return DEFAULT_COLS;
+  }
+}
+
+function saveCols(n) {
+  if (!EDIT_MODE) return;
+  localStorage.setItem(COL_STORAGE_KEY, n);
+}
+
 sports.forEach(s => {
   const items = (manifest[s.id] || []).map((f, i) => ({
     id:   s.id + '_' + i,
@@ -1283,7 +1302,7 @@ function buildSportPage(id) {
     </div>` : ''}
 
     <div class="gal-wrap">
-      <div class="masonry ${cols===1?'c1':''}${cols===2?' c2':''}${cols===3?' c3':''}" id="grid-${id}">
+      <div class="masonry ${cols===1?'c1':''}${cols===2?' c2':''}${cols===3?' c3':''}${cols===4?' c4':''}" id="grid-${id}">
         ${imgs.length === 0 ? emptyState(sport) : imgs.map((img,i) => photoCard(img,i,id)).join('')}
       </div>
     </div>
@@ -1336,7 +1355,7 @@ function setCols(btn, n, id) {
   const g = document.getElementById('grid-' + id);
   if (!g) return;
   g.className = 'masonry';
-  if (n !== 4) g.classList.add('c' + n);
+  g.classList.add('c' + n);
   saveCols(n);
 }
 
